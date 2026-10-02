@@ -2,16 +2,11 @@ import SwiftUI
 import UIKit
 
 // =====================================================================================
-// OffGrid Chat: Next-Gen iOS Liquid Glass UI
-// UI / Presentation Layer
+// OffGrid Chat: Liquid Glass UI (presentation layer only)
 //
-// IMPORTANT:
-// - MeshEngine behavior is unchanged.
-// - Chat behavior is unchanged.
-// - QR verification behavior is unchanged.
-// - Transport behavior is unchanged.
-// - Existing IDs and engine calls are unchanged.
-// - Changes are focused on sizing, margins, layout, animations and transitions.
+// - MeshEngine, Crypto, QR, transport, chat, SOS and navigation behavior are unchanged.
+// - MeshEngine / PeerView / TransportInfo / MsgStatus / ChatMessage / ROOM_ID /
+//   EMERGENCY_ID / Crypto / QRScannerView / qrImage are defined elsewhere and untouched.
 // =====================================================================================
 
 
@@ -21,9 +16,7 @@ enum AppThemeStyle: String, CaseIterable, Identifiable {
     case midnightBlue = "Midnight Blue"
     case obsidianTeal = "Obsidian Teal"
 
-    var id: String {
-        rawValue
-    }
+    var id: String { rawValue }
 }
 
 struct ThemeManager {
@@ -33,16 +26,10 @@ struct ThemeManager {
         get {
             let rawValue = UserDefaults.standard.string(forKey: key)
                 ?? AppThemeStyle.midnightBlue.rawValue
-
-            return AppThemeStyle(rawValue: rawValue)
-                ?? .midnightBlue
+            return AppThemeStyle(rawValue: rawValue) ?? .midnightBlue
         }
-
         set {
-            UserDefaults.standard.set(
-                newValue.rawValue,
-                forKey: key
-            )
+            UserDefaults.standard.set(newValue.rawValue, forKey: key)
         }
     }
 }
@@ -52,121 +39,74 @@ struct Theme {
     static var base: Color {
         switch ThemeManager.currentTheme {
         case .midnightBlue:
-            return Color(
-                red: 0.02,
-                green: 0.02,
-                blue: 0.08
-            )
-
+            return Color(red: 0.02, green: 0.02, blue: 0.08)
         case .obsidianTeal:
-            return Color(
-                red: 0.01,
-                green: 0.05,
-                blue: 0.06
-            )
+            return Color(red: 0.01, green: 0.05, blue: 0.06)
         }
     }
 
     static var accent: Color {
         switch ThemeManager.currentTheme {
         case .midnightBlue:
-            return Color(
-                red: 0.20,
-                green: 0.55,
-                blue: 1.00
-            )
-
+            return Color(red: 0.20, green: 0.55, blue: 1.00)
         case .obsidianTeal:
-            return Color(
-                red: 0.00,
-                green: 0.85,
-                blue: 0.75
-            )
+            return Color(red: 0.00, green: 0.85, blue: 0.75)
         }
     }
 
     static var secondaryAccent: Color {
         switch ThemeManager.currentTheme {
         case .midnightBlue:
-            return Color(
-                red: 0.55,
-                green: 0.30,
-                blue: 0.95
-            )
-
+            return Color(red: 0.55, green: 0.30, blue: 0.95)
         case .obsidianTeal:
-            return Color(
-                red: 0.10,
-                green: 0.50,
-                blue: 0.60
-            )
+            return Color(red: 0.10, green: 0.50, blue: 0.60)
         }
     }
 
     static var mint: Color {
-        Color(
-            red: 0.30,
-            green: 0.92,
-            blue: 0.65
-        )
+        Color(red: 0.30, green: 0.92, blue: 0.65)
     }
 
     static var danger: Color {
-        Color(
-            red: 1.00,
-            green: 0.30,
-            blue: 0.40
-        )
+        Color(red: 1.00, green: 0.30, blue: 0.40)
     }
 
     static var outgoing: LinearGradient {
         switch ThemeManager.currentTheme {
-
         case .midnightBlue:
             return LinearGradient(
                 colors: [
-                    Color(
-                        red: 0.15,
-                        green: 0.50,
-                        blue: 1.0
-                    ),
-                    Color(
-                        red: 0.45,
-                        green: 0.28,
-                        blue: 0.95
-                    )
+                    Color(red: 0.15, green: 0.50, blue: 1.0),
+                    Color(red: 0.45, green: 0.28, blue: 0.95)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-
         case .obsidianTeal:
             return LinearGradient(
                 colors: [
-                    Color(
-                        red: 0.00,
-                        green: 0.70,
-                        blue: 0.65
-                    ),
-                    Color(
-                        red: 0.05,
-                        green: 0.35,
-                        blue: 0.55
-                    )
+                    Color(red: 0.00, green: 0.70, blue: 0.65),
+                    Color(red: 0.05, green: 0.35, blue: 0.55)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
+        }
+    }
+
+    /// Darker accent used to tint outgoing glass bubbles so white text stays legible.
+    static var outgoingTint: Color {
+        switch ThemeManager.currentTheme {
+        case .midnightBlue:
+            return Color(red: 0.12, green: 0.42, blue: 0.95)
+        case .obsidianTeal:
+            return Color(red: 0.00, green: 0.52, blue: 0.52)
         }
     }
 
     static var title: LinearGradient {
         LinearGradient(
-            colors: [
-                Color.white,
-                accent,
-                secondaryAccent
-            ],
+            colors: [Color.white, accent, secondaryAccent],
             startPoint: .leading,
             endPoint: .trailing
         )
@@ -179,34 +119,94 @@ struct Theme {
 enum Haptics {
 
     static func tap() {
-        UIImpactFeedbackGenerator(
-            style: .light
-        ).impactOccurred()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     static func success() {
-        UINotificationFeedbackGenerator()
-            .notificationOccurred(.success)
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
     static func warning() {
-        UINotificationFeedbackGenerator()
-            .notificationOccurred(.warning)
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
     }
 }
 
 
-// MARK: - Liquid Glass & Modifiers
+// MARK: - Motion (short, smooth, non-looping; Reduce Motion aware)
+
+enum Motion {
+    static let quick = Animation.easeInOut(duration: 0.25)
+    static let standard = Animation.spring(response: 0.38, dampingFraction: 0.86)
+    static let theme = Animation.easeInOut(duration: 0.3)
+}
+
+struct MotionAnimationModifier<V: Equatable>: ViewModifier {
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    let animation: Animation
+    let value: V
+
+    func body(content: Content) -> some View {
+        content.animation(
+            reduceMotion ? Animation.easeInOut(duration: 0.15) : animation,
+            value: value
+        )
+    }
+}
+
+struct MotionTransitionModifier: ViewModifier {
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    let transition: AnyTransition
+
+    func body(content: Content) -> some View {
+        content.transition(reduceMotion ? AnyTransition.opacity : transition)
+    }
+}
+
+extension View {
+
+    func motion<V: Equatable>(
+        _ animation: Animation = Motion.standard,
+        value: V
+    ) -> some View {
+        modifier(MotionAnimationModifier(animation: animation, value: value))
+    }
+
+    func motionTransition(_ transition: AnyTransition) -> some View {
+        modifier(MotionTransitionModifier(transition: transition))
+    }
+
+    @ViewBuilder
+    func symbolReplace() -> some View {
+        if #available(iOS 17.0, *) {
+            self.contentTransition(.symbolEffect(.replace))
+        } else {
+            self
+        }
+    }
+}
+
+
+// MARK: - Liquid Glass (centralized)
+
+enum GlassSurfaceStyle {
+    case regular
+    case clear
+}
 
 #if compiler(>=6.2)
 
 @available(iOS 26.0, *)
 private func makeGlass(
+    style: GlassSurfaceStyle,
     tint: Color?,
     interactive: Bool
 ) -> Glass {
 
-    var g = Glass.regular
+    var g: Glass = (style == .clear) ? Glass.clear : Glass.regular
 
     if let tint {
         g = g.tint(tint)
@@ -219,154 +219,247 @@ private func makeGlass(
     return g
 }
 
+@available(iOS 26.0, *)
+private func makeGlass(
+    tint: Color?,
+    interactive: Bool
+) -> Glass {
+    makeGlass(style: .regular, tint: tint, interactive: interactive)
+}
+
 #endif
 
+/// Minimal rim: brighter top-leading, fading to near-clear / slightly dark bottom-trailing.
+private struct GlassEdge<S: InsettableShape>: View {
 
-struct GlassCardModifier: ViewModifier {
-    let cornerRadius: CGFloat
-    let tint: Color?
-    let interactive: Bool
-    let glassID: String?
-    let namespace: Namespace.ID?
+    let shape: S
 
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
-    func body(content: Content) -> some View {
-        if reduceTransparency {
-            content
-                .background(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(Theme.base.opacity(0.95))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(tint ?? Color.white.opacity(0.3), lineWidth: 1)
-                )
-        } else {
-            #if compiler(>=6.2)
-            if #available(iOS 26.0, *) {
-                var g = Glass.regular
-                if let tint {
-                    g = g.tint(tint)
-                }
-                if interactive {
-                    g = g.interactive()
-                }
-                let baseView = content.glassEffect(g, in: .rect(cornerRadius: cornerRadius))
-                if let glassID, let namespace {
-                    baseView.glassEffectID(glassID, in: namespace)
-                } else {
-                    baseView
-                }
-            } else {
-                content.frostedGlass(cornerRadius: cornerRadius, tint: tint)
-            }
-            #else
-            content.frostedGlass(cornerRadius: cornerRadius, tint: tint)
-            #endif
-        }
+    var body: some View {
+        shape
+            .strokeBorder(
+                LinearGradient(
+                    colors: [
+                        Color.white.opacity(0.28),
+                        Color.white.opacity(0.04),
+                        Color.black.opacity(0.12)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                lineWidth: 0.75
+            )
+            .allowsHitTesting(false)
     }
 }
 
+/// The single place where glass availability, fallback and Reduce Transparency are decided.
+struct GlassSurface<S: InsettableShape>: ViewModifier {
+
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    let shape: S
+    var style: GlassSurfaceStyle = .regular
+    var tint: Color? = nil
+    var interactive: Bool = false
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+
+        if reduceTransparency {
+
+            content
+                .background(
+                    shape.fill(
+                        (tint ?? Color.white).opacity(tint == nil ? 0.12 : 0.35)
+                    )
+                )
+                .background(shape.fill(Theme.base))
+                .overlay(GlassEdge(shape: shape))
+
+        } else {
+
+            glass(content)
+        }
+    }
+
+    @ViewBuilder
+    private func glass(_ content: Content) -> some View {
+
+        #if compiler(>=6.2)
+
+        if #available(iOS 26.0, *) {
+
+            content
+                .background(
+                    shape.fill(
+                        Color.black.opacity(style == .clear ? 0.22 : 0)
+                    )
+                )
+                .glassEffect(
+                    makeGlass(
+                        style: style,
+                        tint: tint,
+                        interactive: interactive
+                    ),
+                    in: shape
+                )
+                .overlay(GlassEdge(shape: shape))
+
+        } else {
+
+            content.frostedSurface(in: shape, tint: tint)
+        }
+
+        #else
+
+        content.frostedSurface(in: shape, tint: tint)
+
+        #endif
+    }
+}
 
 extension View {
 
-    @ViewBuilder
-    func glassCard(
-        cornerRadius: CGFloat = 24,
-        tint: Color? = nil,
-        interactive: Bool = false,
-        glassID: String? = nil,
-        namespace: Namespace.ID? = nil
+    /// Material fallback (iOS < 26): ultraThinMaterial + tint wash + hairline gradient stroke.
+    func frostedSurface<S: InsettableShape>(
+        in shape: S,
+        tint: Color?
     ) -> some View {
-        self.modifier(
-            GlassCardModifier(
-                cornerRadius: cornerRadius,
+
+        self
+            .background(.ultraThinMaterial, in: shape)
+            .background(
+                shape.fill(
+                    (tint ?? Color.white).opacity(tint == nil ? 0.06 : 0.22)
+                )
+            )
+            .overlay(GlassEdge(shape: shape))
+            .shadow(
+                color: Color.black.opacity(0.25),
+                radius: 12,
+                y: 6
+            )
+    }
+
+    func glassSurface<S: InsettableShape>(
+        shape: S,
+        style: GlassSurfaceStyle = .regular,
+        tint: Color? = nil,
+        interactive: Bool = false
+    ) -> some View {
+        modifier(
+            GlassSurface(
+                shape: shape,
+                style: style,
                 tint: tint,
-                interactive: interactive,
-                glassID: glassID,
-                namespace: namespace
+                interactive: interactive
             )
         )
     }
 
+    func glassCard(
+        cornerRadius: CGFloat = 24,
+        tint: Color? = nil,
+        interactive: Bool = false
+    ) -> some View {
+        glassSurface(
+            shape: RoundedRectangle(
+                cornerRadius: cornerRadius,
+                style: .continuous
+            ),
+            tint: tint,
+            interactive: interactive
+        )
+    }
+
+    func glassCapsule(
+        tint: Color? = nil,
+        interactive: Bool = false
+    ) -> some View {
+        glassSurface(
+            shape: Capsule(style: .continuous),
+            tint: tint,
+            interactive: interactive
+        )
+    }
+
+    func glassCircle(
+        tint: Color? = nil,
+        interactive: Bool = false
+    ) -> some View {
+        glassSurface(
+            shape: Circle(),
+            tint: tint,
+            interactive: interactive
+        )
+    }
+
+    /// Kept for compatibility with the original file.
     fileprivate func frostedGlass(
         cornerRadius: CGFloat,
         tint: Color?
     ) -> some View {
-
-        let shape = RoundedRectangle(
-            cornerRadius: cornerRadius,
-            style: .continuous
+        frostedSurface(
+            in: RoundedRectangle(
+                cornerRadius: cornerRadius,
+                style: .continuous
+            ),
+            tint: tint
         )
-
-        return self
-            .background(
-                .ultraThinMaterial,
-                in: shape
-            )
-            .background(
-                shape.fill(
-                    (tint ?? Color.white).opacity(
-                        tint == nil ? 0.06 : 0.22
-                    )
-                )
-            )
-            .overlay(
-                VStack {
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(0.55),
-                            Color.white.opacity(0.05)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .frame(height: 1.2)
-
-                    Spacer()
-                }
-                .mask(shape)
-            )
-            .overlay(
-                shape.strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(0.4),
-                            Color.white.opacity(0.04),
-                            Color.black.opacity(0.4)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
-            )
-            .shadow(
-                color: Color.black.opacity(0.4),
-                radius: 20,
-                y: 10
-            )
     }
 
+    /// glassEffectID + materialize transition (iOS 26); no-op otherwise.
     @ViewBuilder
-    func glassTransition() -> some View {
+    func glassMorph(
+        id: String,
+        in namespace: Namespace.ID?
+    ) -> some View {
+
         #if compiler(>=6.2)
-        if #available(iOS 26.0, *) {
-            self.glassEffectTransition()
+
+        if #available(iOS 26.0, *), let namespace {
+
+            self
+                .glassEffectID(id, in: namespace)
+                .glassEffectTransition(.materialize)
+
         } else {
-            self.transition(.opacity)
+
+            self
         }
+
         #else
-        self.transition(.opacity)
+
+        self
+
         #endif
+    }
+
+    /// Non-glass input surface for fields that sit inside a glass card (avoids glass-on-glass).
+    func fieldSurface() -> some View {
+        self
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .frame(minHeight: 44)
+            .frame(maxWidth: .infinity)
+            .background(
+                Capsule(style: .continuous)
+                    .fill(Color.white.opacity(0.10))
+            )
+            .overlay(
+                Capsule(style: .continuous)
+                    .strokeBorder(
+                        Color.white.opacity(0.14),
+                        lineWidth: 0.5
+                    )
+            )
     }
 }
 
 
 // MARK: - Glass Group
 
-struct GlassGroup: View {
+struct GlassGroup<Content: View>: View {
 
     let spacing: CGFloat
     let content: () -> Content
@@ -385,9 +478,7 @@ struct GlassGroup: View {
 
         if #available(iOS 26.0, *) {
 
-            GlassEffectContainer(
-                spacing: spacing
-            ) {
+            GlassEffectContainer(spacing: spacing) {
                 content()
             }
 
@@ -411,71 +502,57 @@ struct GlassButtonStyle: ButtonStyle {
 
     var tint: Color? = nil
 
-    func makeBody(
-        configuration: Configuration
-    ) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
+        GlassButtonBody(configuration: configuration, tint: tint)
+    }
+}
+
+private struct GlassButtonBody: View {
+
+    let configuration: ButtonStyleConfiguration
+    let tint: Color?
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .body) private var minHeight: CGFloat = 44
+
+    var body: some View {
 
         configuration.label
-            .font(
-                .system(
-                    .body,
-                    design: .rounded
-                )
-                .weight(.semibold)
-            )
+            .font(.system(.body, design: .rounded).weight(.semibold))
             .foregroundStyle(Color.white)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 20)
-            .padding(.vertical, 13)
-            .glassCard(
-                cornerRadius: 100,
-                tint: tint,
-                interactive: true
-            )
+            .padding(.vertical, 12)
+            .frame(minHeight: minHeight)
+            .glassCapsule(tint: tint, interactive: true)
             .scaleEffect(
-                configuration.isPressed ? 0.96 : 1
+                configuration.isPressed && !reduceMotion ? 0.96 : 1
             )
-            .brightness(
-                configuration.isPressed ? 0.08 : 0
-            )
-            .animation(
-                .spring(
-                    response: 0.3,
-                    dampingFraction: 0.7
-                ),
-                value: configuration.isPressed
-            )
+            .animation(Motion.quick, value: configuration.isPressed)
     }
 }
 
 
 struct PressableStyle: ButtonStyle {
 
-    func makeBody(
-        configuration: Configuration
-    ) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
 
         configuration.label
-            .scaleEffect(
-                configuration.isPressed ? 0.96 : 1
-            )
-            .brightness(
-                configuration.isPressed ? 0.06 : 0
-            )
-            .opacity(
-                configuration.isPressed ? 0.92 : 1
-            )
-            .animation(
-                .spring(
-                    response: 0.3,
-                    dampingFraction: 0.7
-                ),
-                value: configuration.isPressed
-            )
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .opacity(configuration.isPressed ? 0.9 : 1)
+            .animation(Motion.quick, value: configuration.isPressed)
     }
 }
 
 
-// MARK: - Dynamic Background
+// MARK: - Dynamic Background (static, rendered behind each screen)
+
+// UI-NOTE: Pushed NavigationStack pages draw their own opaque container, so a single
+// root-level background would be covered (or ghost during pushes). The background is
+// therefore attached with .background { } per screen. It is fully static (no animation)
+// and sits outside layout, so it can no longer widen a screen.
 
 struct AppBackground: View {
 
@@ -484,7 +561,6 @@ struct AppBackground: View {
         ZStack {
 
             Theme.base
-                .ignoresSafeArea()
 
             switch ThemeManager.currentTheme {
 
@@ -504,99 +580,53 @@ struct AppBackground: View {
 
 struct MidnightBlueWaveBackground: View {
 
-    @Environment(
-        \.accessibilityReduceMotion
-    )
-    private var reduceMotion
-
-    @State private var waveAnim = false
-
     var body: some View {
 
-        ZStack {
+        GeometryReader { geo in
 
-            Circle()
-                .fill(
-                    Color(
-                        red: 0.05,
-                        green: 0.35,
-                        blue: 0.85
+            let w = max(geo.size.width, 1)
+            let h = max(geo.size.height, 1)
+
+            ZStack {
+
+                Circle()
+                    .fill(
+                        Color(red: 0.05, green: 0.35, blue: 0.85).opacity(0.45)
                     )
-                    .opacity(0.45)
-                )
-                .frame(
-                    width: 380,
-                    height: 380
-                )
-                .blur(radius: 75)
-                .offset(
-                    x: -110,
-                    y: waveAnim ? -210 : -170
-                )
+                    .frame(width: w, height: w)
+                    .blur(radius: 75)
+                    .position(x: w * 0.22, y: h * 0.14)
 
-            Circle()
-                .fill(
-                    Color(
-                        red: 0.30,
-                        green: 0.15,
-                        blue: 0.70
+                Circle()
+                    .fill(
+                        Color(red: 0.30, green: 0.15, blue: 0.70).opacity(0.40)
                     )
-                    .opacity(0.4)
-                )
-                .frame(
-                    width: 410,
-                    height: 410
-                )
-                .blur(radius: 85)
-                .offset(
-                    x: 130,
-                    y: waveAnim ? 280 : 235
-                )
+                    .frame(width: w * 1.05, height: w * 1.05)
+                    .blur(radius: 85)
+                    .position(x: w * 0.82, y: h * 0.86)
 
-            LinearGradient(
-                colors: [
-                    Color(
-                        red: 0.0,
-                        green: 0.4,
-                        blue: 0.9
+                Circle()
+                    .fill(
+                        Color(red: 0.10, green: 0.45, blue: 0.95).opacity(0.22)
                     )
-                    .opacity(0.3),
+                    .frame(width: w * 0.7, height: w * 0.7)
+                    .blur(radius: 70)
+                    .position(x: w * 0.85, y: h * 0.48)
 
-                    Color.clear,
-
-                    Color(
-                        red: 0.4,
-                        green: 0.2,
-                        blue: 0.8
-                    )
-                    .opacity(0.3)
-                ],
-                startPoint: waveAnim
-                    ? .topLeading
-                    : .bottomLeading,
-                endPoint: waveAnim
-                    ? .bottomTrailing
-                    : .topTrailing
-            )
-            .blur(radius: 50)
-        }
-        .onAppear {
-
-            guard !reduceMotion else {
-                return
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.0, green: 0.4, blue: 0.9).opacity(0.25),
+                        Color.clear,
+                        Color(red: 0.4, green: 0.2, blue: 0.8).opacity(0.25)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .blur(radius: 50)
             }
-
-            withAnimation(
-                .easeInOut(
-                    duration: 8
-                )
-                .repeatForever(
-                    autoreverses: true
-                )
-            ) {
-                waveAnim.toggle()
-            }
+            .frame(width: w, height: h)
         }
+        .clipped()
     }
 }
 
@@ -605,94 +635,36 @@ struct MidnightBlueWaveBackground: View {
 
 struct ObsidianTealTubeBackground: View {
 
-    @Environment(
-        \.accessibilityReduceMotion
-    )
-    private var reduceMotion
-
-    @State private var glowAnim = false
-
     var body: some View {
 
         ZStack {
 
             Ellipse()
                 .fill(
-                    Color(
-                        red: 0.0,
-                        green: 0.65,
-                        blue: 0.55
-                    )
-                    .opacity(0.35)
+                    Color(red: 0.0, green: 0.65, blue: 0.55).opacity(0.35)
                 )
-                .frame(
-                    width: 360,
-                    height: 480
-                )
+                .frame(width: 360, height: 480)
                 .blur(radius: 80)
-                .offset(
-                    x: glowAnim ? 95 : -95,
-                    y: -145
-                )
+                .offset(x: 30, y: -145)
 
             Ellipse()
                 .fill(
-                    Color(
-                        red: 0.0,
-                        green: 0.45,
-                        blue: 0.70
-                    )
-                    .opacity(0.3)
+                    Color(red: 0.0, green: 0.45, blue: 0.70).opacity(0.3)
                 )
-                .frame(
-                    width: 400,
-                    height: 430
-                )
+                .frame(width: 400, height: 430)
                 .blur(radius: 90)
-                .offset(
-                    x: glowAnim ? -75 : 75,
-                    y: 190
-                )
+                .offset(x: -30, y: 190)
 
             LinearGradient(
                 colors: [
-                    Color(
-                        red: 0.0,
-                        green: 0.8,
-                        blue: 0.7
-                    )
-                    .opacity(0.15),
-
+                    Color(red: 0.0, green: 0.8, blue: 0.7).opacity(0.15),
                     Color.clear,
-
-                    Color(
-                        red: 0.0,
-                        green: 0.5,
-                        blue: 0.6
-                    )
-                    .opacity(0.15)
+                    Color(red: 0.0, green: 0.5, blue: 0.6).opacity(0.15)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             .blur(radius: 60)
-        }
-        .onAppear {
-
-            guard !reduceMotion else {
-                return
-            }
-
-            withAnimation(
-                .easeInOut(
-                    duration: 7
-                )
-                .repeatForever(
-                    autoreverses: true
-                )
-            ) {
-                glowAnim.toggle()
-            }
         }
     }
 }
@@ -705,13 +677,6 @@ struct StatusDot: View {
     let on: Bool
     var size: CGFloat = 10
 
-    @State private var pulse = false
-
-    @Environment(
-        \.accessibilityReduceMotion
-    )
-    private var reduceMotion
-
     var body: some View {
 
         ZStack {
@@ -719,146 +684,57 @@ struct StatusDot: View {
             if on {
 
                 Circle()
-                    .fill(
-                        Theme.mint.opacity(0.4)
-                    )
-                    .frame(
-                        width: size * 2.2,
-                        height: size * 2.2
-                    )
-                    .scaleEffect(
-                        pulse ? 1.8 : 1
-                    )
-                    .opacity(
-                        pulse ? 0 : 0.8
-                    )
+                    .fill(Theme.mint.opacity(0.25))
+                    .frame(width: size * 2, height: size * 2)
             }
 
             Circle()
-                .fill(
-                    on
-                    ? Theme.mint
-                    : Color.white.opacity(0.3)
-                )
-                .frame(
-                    width: size,
-                    height: size
-                )
+                .fill(on ? Theme.mint : Color.white.opacity(0.3))
+                .frame(width: size, height: size)
                 .shadow(
-                    color: on
-                    ? Theme.mint.opacity(0.6)
-                    : Color.clear,
+                    color: on ? Theme.mint.opacity(0.6) : Color.clear,
                     radius: 4
                 )
         }
-        .frame(
-            width: size * 2.5,
-            height: size * 2.5
-        )
-        .onAppear {
-
-            guard !reduceMotion else {
-                return
-            }
-
-            withAnimation(
-                .easeOut(
-                    duration: 1.8
-                )
-                .repeatForever(
-                    autoreverses: false
-                )
-            ) {
-                pulse = true
-            }
-        }
-        .animation(
-            .easeInOut(duration: 0.3),
-            value: on
-        )
+        .frame(width: size * 2.5, height: size * 2.5)
+        .motion(Motion.quick, value: on)
+        .accessibilityHidden(true)
     }
 }
 
 
-// MARK: - Radar
+// MARK: - Radar (static; no looping animation)
 
 struct RadarView: View {
 
-    @State private var go = false
-
-    @Environment(
-        \.accessibilityReduceMotion
-    )
-    private var reduceMotion
+    @ScaledMetric(relativeTo: .title) private var side: CGFloat = 120
 
     var body: some View {
 
         ZStack {
 
-            ForEach(
-                0..<3,
-                id: \.self
-            ) { i in
+            ForEach(0..<3, id: \.self) { i in
 
                 Circle()
                     .stroke(
                         LinearGradient(
-                            colors: [
-                                Theme.accent,
-                                Theme.secondaryAccent
-                            ],
+                            colors: [Theme.accent, Theme.secondaryAccent],
                             startPoint: .top,
                             endPoint: .bottom
                         ),
                         lineWidth: 1.5
                     )
-                    .scaleEffect(
-                        go ? 1.15 : 0.2
-                    )
-                    .opacity(
-                        go ? 0 : 0.85
-                    )
-                    .animation(
-                        reduceMotion
-                        ? nil
-                        : .easeOut(
-                            duration: 2.6
-                        )
-                        .repeatForever(
-                            autoreverses: false
-                        )
-                        .delay(
-                            Double(i) * 0.9
-                        ),
-                        value: go
-                    )
+                    .scaleEffect(0.45 + CGFloat(i) * 0.28)
+                    .opacity(0.75 - Double(i) * 0.2)
             }
 
-            Image(
-                systemName:
-                    "dot.radiowaves.left.and.right"
-            )
-            .font(
-                .system(
-                    size: 30,
-                    weight: .semibold
-                )
-            )
-            .foregroundStyle(
-                Theme.title
-            )
-            .shadow(
-                color: Theme.accent.opacity(0.6),
-                radius: 10
-            )
+            Image(systemName: "dot.radiowaves.left.and.right")
+                .symbolRenderingMode(.hierarchical)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(Theme.title)
         }
-        .frame(
-            width: 125,
-            height: 125
-        )
-        .onAppear {
-            go = true
-        }
+        .frame(width: side, height: side)
+        .accessibilityHidden(true)
     }
 }
 
@@ -870,6 +746,8 @@ struct Avatar: View {
     let name: String
     let online: Bool
 
+    @ScaledMetric(relativeTo: .headline) private var size: CGFloat = 44
+
     var body: some View {
 
         ZStack {
@@ -877,67 +755,30 @@ struct Avatar: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [
-                            Theme.accent,
-                            Theme.secondaryAccent
-                        ],
+                        colors: [Theme.accent, Theme.secondaryAccent],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
 
-            Text(
-                String(
-                    name.prefix(1)
-                )
-                .uppercased()
-            )
-            .font(
-                .system(
-                    .headline,
-                    design: .rounded
-                )
-                .weight(.bold)
-            )
-            .foregroundStyle(Color.white)
+            Text(String(name.prefix(1)).uppercased())
+                .font(.system(.headline, design: .rounded).weight(.bold))
+                .foregroundStyle(Color.white)
         }
-        .frame(
-            width: 46,
-            height: 46
-        )
-        .shadow(
-            color: Color.black.opacity(0.3),
-            radius: 8,
-            y: 4
-        )
-        .overlay(
-            alignment: .bottomTrailing
-        ) {
+        .frame(width: size, height: size)
+        .overlay(alignment: .bottomTrailing) {
 
             Circle()
-                .fill(
-                    online
-                    ? Theme.mint
-                    : Color.gray
-                )
-                .frame(
-                    width: 13,
-                    height: 13
-                )
+                .fill(online ? Theme.mint : Color.gray)
+                .frame(width: size * 0.28, height: size * 0.28)
                 .overlay(
-                    Circle()
-                        .stroke(
-                            Color.black.opacity(0.6),
-                            lineWidth: 2.5
-                        )
-                )
-                .shadow(
-                    color: online
-                    ? Theme.mint.opacity(0.8)
-                    : Color.clear,
-                    radius: 4
+                    Circle().stroke(
+                        Color.black.opacity(0.6),
+                        lineWidth: 2
+                    )
                 )
         }
+        .accessibilityHidden(true)
     }
 }
 
@@ -954,24 +795,16 @@ struct SectionTitle: View {
 
     var body: some View {
 
-        HStack(spacing: 6) {
+        HStack(spacing: 8) {
 
-            Text(
-                text.uppercased()
-            )
-            .font(
-                .system(
-                    .caption,
-                    design: .rounded
-                )
-                .weight(.bold)
-            )
-            .tracking(1.2)
-            .foregroundStyle(
-                Color.white.opacity(0.7)
-            )
+            Text(text.uppercased())
+                .font(.system(.caption, design: .rounded).weight(.bold))
+                .tracking(1.2)
+                .foregroundStyle(Color.white.opacity(0.75))
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
 
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(.top, 8)
         .padding(.horizontal, 4)
@@ -989,78 +822,49 @@ struct RowCard: View {
 
     var tint: Color = Theme.accent
 
+    @ScaledMetric(relativeTo: .headline) private var iconSize: CGFloat = 44
+
     var body: some View {
 
-        HStack(spacing: 13) {
+        HStack(spacing: 12) {
 
             Image(systemName: icon)
-                .font(
-                    .system(
-                        size: 19,
-                        weight: .semibold
-                    )
-                )
+                .symbolRenderingMode(.hierarchical)
+                .font(.body.weight(.semibold))
                 .foregroundStyle(Color.white)
-                .frame(
-                    width: 46,
-                    height: 46
-                )
+                .frame(width: iconSize, height: iconSize)
                 .background(
-                    Circle()
-                        .fill(
-                            tint.opacity(0.35)
-                        )
-                        .shadow(
-                            color: tint.opacity(0.5),
-                            radius: 9
-                        )
+                    Circle().fill(tint.opacity(0.35))
                 )
+                .accessibilityHidden(true)
 
-            VStack(
-                alignment: .leading,
-                spacing: 4
-            ) {
+            VStack(alignment: .leading, spacing: 4) {
 
                 Text(title)
-                    .font(
-                        .system(
-                            .headline,
-                            design: .rounded
-                        )
-                        .weight(.semibold)
-                    )
+                    .font(.system(.headline, design: .rounded).weight(.semibold))
                     .foregroundStyle(Color.white)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
 
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundStyle(
-                        Color.white.opacity(0.7)
-                    )
+                    .foregroundStyle(Color.white.opacity(0.75))
                     .multilineTextAlignment(.leading)
-                    .lineLimit(2)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(
-                maxWidth: .infinity,
-                alignment: .leading
-            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .layoutPriority(1)
 
             Image(systemName: "chevron.right")
-                .font(
-                    .caption.weight(.bold)
-                )
-                .foregroundStyle(
-                    Color.white.opacity(0.4)
-                )
+                .font(.caption.weight(.bold))
+                .foregroundStyle(Color.white.opacity(0.5))
+                .accessibilityHidden(true)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .frame(
-            maxWidth: .infinity,
-            alignment: .leading
-        )
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(
-            cornerRadius: 24,
+            cornerRadius: 22,
             tint: tint.opacity(0.12)
         )
         .accessibilityElement(children: .combine)
@@ -1076,61 +880,42 @@ struct PeerRow: View {
 
     var body: some View {
 
-        HStack(spacing: 13) {
+        HStack(spacing: 12) {
 
-            Avatar(
-                name: p.nick,
-                online: p.online
-            )
+            Avatar(name: p.nick, online: p.online)
 
-            VStack(
-                alignment: .leading,
-                spacing: 4
-            ) {
+            VStack(alignment: .leading, spacing: 4) {
 
-                HStack(spacing: 5) {
+                HStack(spacing: 6) {
 
                     Text(p.nick)
-                        .font(
-                            .system(
-                                .headline,
-                                design: .rounded
-                            )
-                            .weight(.semibold)
-                        )
+                        .font(.system(.headline, design: .rounded).weight(.semibold))
                         .foregroundStyle(Color.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
 
                     if p.verified {
 
-                        Image(
-                            systemName:
-                                "checkmark.seal.fill"
-                        )
-                        .foregroundStyle(
-                            Theme.accent
-                        )
-                        .font(.subheadline)
-                        .shadow(
-                            color: Theme.accent.opacity(0.7),
-                            radius: 5
-                        )
-                        .transition(
-                            .scale
-                            .combined(with: .opacity)
-                        )
+                        Image(systemName: "checkmark.seal.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(Theme.accent)
+                            .font(.subheadline)
+                            .accessibilityLabel("Verified")
+                            .motionTransition(
+                                .opacity.combined(with: .scale(scale: 0.9))
+                            )
                     }
                 }
 
-                HStack(spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
 
                     Image(
-                        systemName:
-                            p.online
+                        systemName: p.online
                             ? "antenna.radiowaves.left.and.right"
                             : "moon.zzz.fill"
                     )
                     .font(.caption2)
+                    .symbolReplace()
 
                     Text(
                         p.online
@@ -1138,37 +923,24 @@ struct PeerRow: View {
                         : "offline · messages will queue"
                     )
                     .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .font(.subheadline)
-                .foregroundStyle(
-                    Color.white.opacity(0.7)
-                )
+                .foregroundStyle(Color.white.opacity(0.75))
             }
-
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .layoutPriority(1)
 
             Image(systemName: "chevron.right")
-                .font(
-                    .caption.weight(.bold)
-                )
-                .foregroundStyle(
-                    Color.white.opacity(0.4)
-                )
+                .font(.caption.weight(.bold))
+                .foregroundStyle(Color.white.opacity(0.5))
+                .accessibilityHidden(true)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .frame(
-            maxWidth: .infinity,
-            alignment: .leading
-        )
-        .glassCard(
-            cornerRadius: 24
-        )
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassCard(cornerRadius: 22)
+        .motion(Motion.quick, value: p.verified)
         .accessibilityElement(children: .combine)
-        .animation(
-            .easeInOut(duration: 0.3),
-            value: p.verified
-        )
     }
 }
 
@@ -1190,52 +962,35 @@ struct BannerCard: View {
         HStack(spacing: 12) {
 
             Image(systemName: icon)
-                .font(
-                    .system(
-                        size: 18,
-                        weight: .semibold
-                    )
-                )
+                .symbolRenderingMode(.hierarchical)
+                .font(.body.weight(.semibold))
                 .foregroundStyle(tint)
+                .accessibilityHidden(true)
 
             Text(text)
                 .font(.subheadline)
                 .foregroundStyle(Color.white)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .leading
-                )
-                .lineLimit(4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(5)
+                .layoutPriority(1)
 
             if let actionTitle,
                let action {
 
-                Button(
-                    actionTitle,
-                    action: action
-                )
-                .font(
-                    .subheadline.weight(.semibold)
-                )
-                .foregroundStyle(
-                    Theme.accent
-                )
-                .buttonStyle(
-                    PressableStyle()
-                )
-                .accessibilityLabel(actionTitle)
+                Button(actionTitle, action: action)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+                    .frame(minHeight: 44)
+                    .buttonStyle(PressableStyle())
             }
         }
         .padding(14)
-        .frame(
-            maxWidth: .infinity,
-            alignment: .leading
-        )
+        .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(
             cornerRadius: 20,
             tint: tint.opacity(0.28)
         )
-        .accessibilityElement(children: .combine)
     }
 }
 
@@ -1246,25 +1001,19 @@ struct TransportChip: View {
 
     let info: TransportInfo
 
+    var ns: Namespace.ID? = nil
+
     var body: some View {
 
         HStack(spacing: 6) {
 
             StatusDot(
-                on:
-                    info.state.active &&
-                    info.state.links > 0,
+                on: info.state.active && info.state.links > 0,
                 size: 6
             )
 
             Text(info.label)
-                .font(
-                    .system(
-                        .subheadline,
-                        design: .rounded
-                    )
-                    .weight(.semibold)
-                )
+                .font(.system(.subheadline, design: .rounded).weight(.semibold))
                 .foregroundStyle(Color.white)
                 .lineLimit(1)
 
@@ -1274,15 +1023,12 @@ struct TransportChip: View {
                 : "off"
             )
             .font(.caption)
-            .foregroundStyle(
-                Color.white.opacity(0.75)
-            )
+            .foregroundStyle(Color.white.opacity(0.8))
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 7)
-        .glassCard(
-            cornerRadius: 100
-        )
+        .padding(.vertical, 8)
+        .glassCapsule()
+        .glassMorph(id: info.label, in: ns)
         .accessibilityElement(children: .combine)
     }
 }
@@ -1295,8 +1041,7 @@ struct RootView: View {
     @EnvironmentObject var engine: MeshEngine
 
     @AppStorage("selectedTheme")
-    private var selectedTheme: AppThemeStyle =
-        .midnightBlue
+    private var selectedTheme: AppThemeStyle = .midnightBlue
 
     var body: some View {
 
@@ -1305,13 +1050,7 @@ struct RootView: View {
             if engine.nickname.isEmpty {
 
                 NicknameView()
-                    .transition(
-                        .opacity
-                        .combined(
-                            with:
-                                .scale(scale: 1.03)
-                        )
-                    )
+                    .transition(.opacity)
 
             } else {
 
@@ -1319,15 +1058,14 @@ struct RootView: View {
 
                     PeersView()
                 }
-                .transition(
-                    .opacity
-                )
+                .transition(.opacity)
             }
         }
         .animation(
-            .easeInOut(duration: 0.45),
+            .easeInOut(duration: 0.35),
             value: engine.nickname.isEmpty
         )
+        .animation(Motion.theme, value: selectedTheme)
         .preferredColorScheme(.dark)
         .tint(Theme.accent)
         .id(selectedTheme)
@@ -1341,219 +1079,131 @@ struct NicknameView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .largeTitle) private var titleSize: CGFloat = 34
+
     @State private var nick = ""
     @State private var appeared = false
 
     private var isEmpty: Bool {
         nick
-            .trimmingCharacters(
-                in: .whitespaces
-            )
+            .trimmingCharacters(in: .whitespaces)
             .isEmpty
+    }
+
+    private var shown: Bool {
+        appeared || reduceMotion
     }
 
     var body: some View {
 
-        ZStack {
+        ScrollView {
 
-            AppBackground()
+            VStack(spacing: 24) {
 
-            ScrollView {
-                VStack(spacing: 24) {
+                Spacer(minLength: 24)
 
-                    Spacer(
-                        minLength: 40
-                    )
+                RadarView()
+                    .opacity(shown ? 1 : 0)
 
-                    RadarView()
-                        .scaleEffect(
-                            appeared ? 1 : 0.75
-                        )
-                        .opacity(
-                            appeared ? 1 : 0
-                        )
+                VStack(spacing: 12) {
 
-                    VStack(spacing: 10) {
-
-                        Text("OffGrid Chat")
-                            .font(
-                                .system(
-                                    size: 38,
-                                    weight: .bold,
-                                    design: .rounded
-                                )
-                            )
-                            .foregroundStyle(
-                                Theme.title
-                            )
-                            .shadow(
-                                color:
-                                    Theme.accent.opacity(0.4),
-                                radius: 14
-                            )
-                            .minimumScaleFactor(0.8)
-
-                        Text(
-                            "Secure decentralized mesh communication. Operates entirely off-grid via Bluetooth and local Wi-Fi."
-                        )
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(
-                            Color.white.opacity(0.8)
-                        )
-                        .padding(
-                            .horizontal,
-                            8
-                        )
-                    }
-                    .offset(
-                        y: appeared ? 0 : 15
-                    )
-                    .opacity(
-                        appeared ? 1 : 0
-                    )
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 12
-                    ) {
-
-                        Label(
-                            "Choose Nickname",
-                            systemImage:
-                                "person.crop.circle.badge.plus"
-                        )
+                    Text("OffGrid Chat")
                         .font(
                             .system(
-                                .headline,
+                                size: titleSize,
+                                weight: .bold,
                                 design: .rounded
                             )
                         )
-                        .foregroundStyle(
-                            Color.white
-                        )
+                        .foregroundStyle(Theme.title)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .accessibilityAddTraits(.isHeader)
 
-                        TextField(
-                            "",
-                            text: $nick,
-                            prompt:
-                                Text(
-                                    "Enter display name"
-                                )
-                                .foregroundColor(
-                                    Color.white.opacity(0.4)
-                                )
-                        )
-                        .font(
-                            .system(
-                                .body,
-                                design: .rounded
-                            )
-                        )
-                        .foregroundStyle(
-                            Color.white
-                        )
-                        .padding(
-                            .horizontal,
-                            16
-                        )
-                        .padding(
-                            .vertical,
-                            13
-                        )
-                        .frame(
-                            maxWidth: .infinity
-                        )
-                        .glassCard(
-                            cornerRadius: 18
-                        )
-
-                        Text(
-                            "No account required. Your cryptographic keypair verifies your identity across the mesh."
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(
-                            Color.white.opacity(0.65)
-                        )
-
-                        Button {
-
-                            Haptics.success()
-
-                            engine.setNickname(
-                                nick
-                            )
-
-                        } label: {
-
-                            HStack {
-
-                                Text(
-                                    "Initialize Node"
-                                )
-
-                                Image(
-                                    systemName:
-                                        "arrow.right"
-                                )
-                            }
-                            .frame(
-                                maxWidth: .infinity
-                            )
-                        }
-                        .buttonStyle(
-                            GlassButtonStyle(
-                                tint:
-                                    Theme.accent.opacity(
-                                        0.8
-                                    )
-                            )
-                        )
-                        .disabled(isEmpty)
-                        .opacity(
-                            isEmpty ? 0.5 : 1
-                        )
-                        .animation(
-                            .easeInOut(
-                                duration: 0.25
-                            ),
-                            value: isEmpty
-                        )
-                    }
-                    .padding(20)
-                    .frame(
-                        maxWidth: 520
+                    Text(
+                        "Secure decentralized mesh communication. Operates entirely off-grid via Bluetooth and local Wi-Fi."
                     )
-                    .glassCard(
-                        cornerRadius: 30
-                    )
-                    .offset(
-                        y: appeared ? 0 : 25
-                    )
-                    .opacity(
-                        appeared ? 1 : 0
-                    )
-
-                    Spacer(
-                        minLength: 40
-                    )
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.white.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 8)
                 }
-                .frame(
-                    maxWidth: .infinity
+                .offset(y: shown ? 0 : 12)
+                .opacity(shown ? 1 : 0)
+
+                VStack(alignment: .leading, spacing: 12) {
+
+                    Label(
+                        "Choose Nickname",
+                        systemImage: "person.crop.circle.badge.plus"
+                    )
+                    .symbolRenderingMode(.hierarchical)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Color.white)
+
+                    TextField(
+                        "",
+                        text: $nick,
+                        prompt: Text("Enter display name")
+                            .foregroundColor(Color.white.opacity(0.55))
+                    )
+                    .font(.system(.body, design: .rounded))
+                    .foregroundStyle(Color.white)
+                    .fieldSurface()
+                    .accessibilityLabel("Display name")
+
+                    Text(
+                        "No account required. Your cryptographic keypair verifies your identity across the mesh."
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(Color.white.opacity(0.7))
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(20)
+                .frame(maxWidth: 520, alignment: .leading)
+                .glassCard(cornerRadius: 28)
+                .offset(y: shown ? 0 : 16)
+                .opacity(shown ? 1 : 0)
+
+                // Button sits outside the glass card so glass never stacks on glass.
+                Button {
+
+                    Haptics.success()
+
+                    engine.setNickname(nick)
+
+                } label: {
+
+                    HStack {
+
+                        Text("Initialize Node")
+
+                        Image(systemName: "arrow.right")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(
+                    GlassButtonStyle(tint: Theme.accent.opacity(0.8))
                 )
-                .padding(.horizontal, 20)
-                .padding(.vertical, 20)
+                .frame(maxWidth: 520)
+                .disabled(isEmpty)
+                .opacity(isEmpty ? 0.5 : 1)
+                .motion(Motion.quick, value: isEmpty)
+                .opacity(shown ? 1 : 0)
+
+                Spacer(minLength: 24)
             }
-            .scrollIndicators(.hidden)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 20)
         }
+        .scrollIndicators(.hidden)
+        .background { AppBackground() }
         .onAppear {
 
-            withAnimation(
-                .spring(
-                    response: 0.8,
-                    dampingFraction: 0.82
-                )
-            ) {
+            withAnimation(.easeInOut(duration: 0.35)) {
                 appeared = true
             }
         }
@@ -1567,262 +1217,155 @@ struct PeersView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
-    @Namespace private var peerNamespace
+    @Namespace private var glassNS
 
     private var peerKey: [String] {
         engine.peers.map {
-            $0.id +
-            ($0.online ? "1" : "0")
+            $0.id + ($0.online ? "1" : "0")
         }
     }
 
     var body: some View {
 
-        ZStack {
+        ScrollView {
 
-            AppBackground()
+            VStack(spacing: 16) {
 
-            ScrollView {
+                // MARK: Transport Status
 
-                VStack(spacing: 16) {
-
-                    // MARK: Transport Status
+                ScrollView(.horizontal, showsIndicators: false) {
 
                     GlassGroup(spacing: 8) {
 
-                        ScrollView(
-                            .horizontal,
-                            showsIndicators: false
-                        ) {
+                        HStack(spacing: 8) {
 
-                            HStack(spacing: 8) {
-
-                                ForEach(
-                                    engine.transportInfos
-                                ) {
-                                    TransportChip(
-                                        info: $0
-                                    )
-                                    .glassTransition()
-                                }
+                            ForEach(engine.transportInfos) {
+                                TransportChip(info: $0, ns: glassNS)
                             }
-                            .padding(
-                                .horizontal,
-                                4
-                            )
-                            .padding(
-                                .vertical,
-                                6
-                            )
                         }
-                    }
-
-                    // MARK: Errors
-
-                    ForEach(
-                        engine.transportInfos.filter {
-                            $0.state.error != nil
-                        }
-                    ) { t in
-
-                        BannerCard(
-                            icon:
-                                "exclamationmark.triangle.fill",
-                            text:
-                                "\(t.label): \(t.state.error ?? "")"
-                        )
-                        .transition(
-                            .move(edge: .top)
-                            .combined(
-                                with: .opacity
-                            )
-                        )
-                    }
-
-                    // MARK: Main Rooms
-
-                    VStack(spacing: 10) {
-
-                        NavigationLink(
-                            destination:
-                                ChatView(
-                                    convId: ROOM_ID,
-                                    title: "Group Room"
-                                )
-                        ) {
-
-                            RowCard(
-                                icon: "person.3.fill",
-                                title: "Group Room",
-                                subtitle:
-                                    "Broadcast to all reachable mesh nodes (signed)"
-                            )
-                        }
-                        .buttonStyle(
-                            PressableStyle()
-                        )
-
-                        NavigationLink(
-                            destination:
-                                ChatView(
-                                    convId:
-                                        EMERGENCY_ID,
-                                    title:
-                                        "Emergency SOS"
-                                )
-                        ) {
-
-                            RowCard(
-                                icon:
-                                    "exclamationmark.octagon.fill",
-                                title:
-                                    "Emergency SOS",
-                                subtitle:
-                                    "High-priority alert to all nearby nodes",
-                                tint:
-                                    Theme.danger
-                            )
-                        }
-                        .buttonStyle(
-                            PressableStyle()
-                        )
-                    }
-
-                    SectionTitle(
-                        "Discovered Nodes"
-                    )
-
-                    // MARK: Empty State
-
-                    if engine.peers.isEmpty {
-
-                        VStack(spacing: 12) {
-
-                            RadarView()
-
-                            Text(
-                                "Scanning Mesh Network…"
-                            )
-                            .font(
-                                .system(
-                                    .headline,
-                                    design: .rounded
-                                )
-                            )
-                            .foregroundStyle(
-                                Color.white
-                            )
-
-                            Text(
-                                "No peers detected yet. Ensure Bluetooth is enabled and devices are within close proximity."
-                            )
-                            .font(.subheadline)
-                            .multilineTextAlignment(
-                                .center
-                            )
-                            .foregroundStyle(
-                                Color.white.opacity(0.7)
-                            )
-                            .padding(
-                                .horizontal,
-                                8
-                            )
-                        }
-                        .padding(
-                            .horizontal,
-                            14
-                        )
-                        .padding(
-                            .vertical,
-                            22
-                        )
-                        .frame(
-                            maxWidth: .infinity
-                        )
-                        .glassCard(
-                            cornerRadius: 28
-                        )
-                        .transition(
-                            .opacity
-                            .combined(
-                                with:
-                                    .scale(
-                                        scale: 0.96
-                                    )
-                            )
-                        )
-                    }
-
-                    // MARK: Peers
-
-                    ForEach(
-                        engine.peers
-                    ) { p in
-
-                        NavigationLink(
-                            destination:
-                                ChatView(
-                                    convId: p.id,
-                                    title: p.nick
-                                )
-                        ) {
-
-                            PeerRow(
-                                p: p
-                            )
-                            .glassCard(cornerRadius: 24, glassID: p.id, namespace: peerNamespace)
-                        }
-                        .buttonStyle(
-                            PressableStyle()
-                        )
-                        .transition(
-                            .move(
-                                edge: .trailing
-                            )
-                            .combined(
-                                with: .opacity
-                            )
-                        )
+                        .padding(.horizontal, 2)
+                        .padding(.vertical, 4)
                     }
                 }
-                .frame(
-                    maxWidth: 620
-                )
-                .padding(
-                    .horizontal,
-                    20
-                )
-                .padding(
-                    .top,
-                    6
-                )
-                .padding(
-                    .bottom,
-                    28
-                )
-                .animation(
-                    .spring(
-                        response: 0.5,
-                        dampingFraction: 0.82
-                    ),
-                    value: peerKey
-                )
+
+                // MARK: Errors
+
+                ForEach(
+                    engine.transportInfos.filter {
+                        $0.state.error != nil
+                    }
+                ) { t in
+
+                    BannerCard(
+                        icon: "exclamationmark.triangle.fill",
+                        text: "\(t.label): \(t.state.error ?? "")"
+                    )
+                    .motionTransition(
+                        .move(edge: .top).combined(with: .opacity)
+                    )
+                }
+
+                // MARK: Main Rooms
+
+                VStack(spacing: 12) {
+
+                    NavigationLink(
+                        destination: ChatView(
+                            convId: ROOM_ID,
+                            title: "Group Room"
+                        )
+                    ) {
+
+                        RowCard(
+                            icon: "person.3.fill",
+                            title: "Group Room",
+                            subtitle: "Broadcast to all reachable mesh nodes (signed)"
+                        )
+                    }
+                    .buttonStyle(PressableStyle())
+
+                    NavigationLink(
+                        destination: ChatView(
+                            convId: EMERGENCY_ID,
+                            title: "Emergency SOS"
+                        )
+                    ) {
+
+                        RowCard(
+                            icon: "exclamationmark.octagon.fill",
+                            title: "Emergency SOS",
+                            subtitle: "High-priority alert to all nearby nodes",
+                            tint: Theme.danger
+                        )
+                    }
+                    .buttonStyle(PressableStyle())
+                }
+
+                SectionTitle("Discovered Nodes")
+
+                // MARK: Empty State
+
+                if engine.peers.isEmpty {
+
+                    VStack(spacing: 12) {
+
+                        RadarView()
+
+                        Text("Scanning Mesh Network…")
+                            .font(.system(.headline, design: .rounded))
+                            .foregroundStyle(Color.white)
+                            .multilineTextAlignment(.center)
+
+                        Text(
+                            "No peers detected yet. Ensure Bluetooth is enabled and devices are within close proximity."
+                        )
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(Color.white.opacity(0.75))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 8)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 24)
+                    .frame(maxWidth: .infinity)
+                    .glassCard(cornerRadius: 26)
+                    .motionTransition(.opacity)
+                }
+
+                // MARK: Peers
+
+                ForEach(engine.peers) { p in
+
+                    NavigationLink(
+                        destination: ChatView(
+                            convId: p.id,
+                            title: p.nick
+                        )
+                    ) {
+
+                        PeerRow(p: p)
+                    }
+                    .buttonStyle(PressableStyle())
+                    .motionTransition(
+                        .move(edge: .trailing).combined(with: .opacity)
+                    )
+                }
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal, 20)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
+            .frame(maxWidth: 620)
+            .frame(maxWidth: .infinity)
+            .motion(Motion.standard, value: peerKey)
         }
-        .navigationTitle(
-            "OffGrid Chat"
-        )
-        .toolbarColorScheme(
-            .dark,
-            for: .navigationBar
-        )
+        .scrollIndicators(.hidden)
+        .background { AppBackground() }
+        .navigationTitle("OffGrid Chat")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
 
-            ToolbarItemGroup(
-                placement:
-                    .navigationBarTrailing
-            ) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
 
                 NavigationLink {
 
@@ -1830,13 +1373,10 @@ struct PeersView: View {
 
                 } label: {
 
-                    Image(
-                        systemName:
-                            "qrcode.viewfinder"
-                    )
+                    Image(systemName: "qrcode.viewfinder")
                 }
-                .accessibilityLabel("Identity & QR")
-                .accessibilityHint("View your cryptographic fingerprint and QR code")
+                .accessibilityLabel("Identity")
+                .accessibilityHint("Shows your fingerprint and QR code")
 
                 NavigationLink {
 
@@ -1844,13 +1384,9 @@ struct PeersView: View {
 
                 } label: {
 
-                    Image(
-                        systemName:
-                            "waveform.badge.magnifyingglass"
-                    )
+                    Image(systemName: "waveform.badge.magnifyingglass")
                 }
                 .accessibilityLabel("Radios & Settings")
-                .accessibilityHint("Configure mesh transports and visual themes")
             }
         }
     }
@@ -1868,22 +1404,21 @@ struct ChatView: View {
 
     @State private var text = ""
     @State private var bounce = false
+    // UI-NOTE: `glow` was driven by a repeatForever animation on the SOS button.
+    // Looping animation is not allowed by the design brief, so it is no longer used.
     @State private var glow = false
+
+    @ScaledMetric(relativeTo: .body) private var controlSize: CGFloat = 44
 
     private var msgs: [ChatMessage] {
 
         engine.messages
-            .filter {
-                $0.convId == convId
-            }
-            .sorted {
-                $0.ts < $1.ts
-            }
+            .filter { $0.convId == convId }
+            .sorted { $0.ts < $1.ts }
     }
 
     private var isGroup: Bool {
-        convId == ROOM_ID ||
-        convId == EMERGENCY_ID
+        convId == ROOM_ID || convId == EMERGENCY_ID
     }
 
     private var isSOS: Bool {
@@ -1891,24 +1426,30 @@ struct ChatView: View {
     }
 
     private var peer: PeerView? {
-        engine.peers.first {
-            $0.id == convId
-        }
+        engine.peers.first { $0.id == convId }
     }
 
     private var isEmpty: Bool {
         text
-            .trimmingCharacters(
-                in:
-                    .whitespacesAndNewlines
-            )
+            .trimmingCharacters(in: .whitespacesAndNewlines)
             .isEmpty
     }
 
+    private func isContinuation(_ m: ChatMessage) -> Bool {
+
+        let list = msgs
+
+        guard let i = list.firstIndex(where: { $0.id == m.id }),
+              i > 0 else {
+            return false
+        }
+
+        return list[i - 1].senderId == m.senderId
+            && list[i - 1].outgoing == m.outgoing
+    }
+
     @ViewBuilder
-    private func statusBadge(
-        _ s: MsgStatus
-    ) -> some View {
+    private func statusBadge(_ s: MsgStatus) -> some View {
 
         HStack(spacing: 4) {
 
@@ -1916,209 +1457,114 @@ struct ChatView: View {
 
             case .queued:
 
-                Image(
-                    systemName:
-                        "clock.fill"
-                )
-                .font(.caption2)
+                Image(systemName: "clock.fill")
+                    .font(.caption2)
 
                 Text("Queued")
 
             case .sent:
 
-                Image(
-                    systemName:
-                        "checkmark"
-                )
-                .font(.caption2)
+                Image(systemName: "checkmark")
+                    .font(.caption2)
 
                 Text("Sent")
 
             case .delivered:
 
-                Image(
-                    systemName:
-                        "checkmark.2"
-                )
-                .font(.caption2)
+                Image(systemName: "checkmark.2")
+                    .font(.caption2)
 
                 Text("Delivered")
 
             case .failed:
 
-                Image(
-                    systemName:
-                        "exclamationmark.circle.fill"
-                )
-                .font(.caption2)
+                Image(systemName: "exclamationmark.circle.fill")
+                    .font(.caption2)
 
-                Text(
-                    "Failed · Tap to retry"
-                )
+                Text("Failed · Tap to retry")
 
             case .received:
 
                 EmptyView()
             }
         }
-        .font(
-            .caption2.weight(.medium)
-        )
+        .font(.caption2.weight(.medium))
         .foregroundStyle(
             s == .failed
             ? Theme.danger
-            : Color.white.opacity(0.65)
+            : Color.white.opacity(0.7)
         )
     }
 
     var body: some View {
 
-        ZStack {
+        VStack(spacing: 0) {
 
-            AppBackground()
+            VStack(spacing: 8) {
 
-            VStack(spacing: 0) {
+                if let p = peer,
+                   !p.verified {
 
-                VStack(spacing: 8) {
+                    BannerCard(
+                        icon: "shield.lefthalf.filled",
+                        text: "Unverified peer. Compare cryptographic fingerprint on their Identity screen.",
+                        actionTitle: "Verify"
+                    ) {
 
-                    if let p = peer,
-                       !p.verified {
+                        Haptics.success()
 
-                        BannerCard(
-                            icon:
-                                "shield.lefthalf.filled",
-                            text:
-                                "Unverified peer. Compare cryptographic fingerprint on their Identity screen.",
-                            actionTitle:
-                                "Verify"
-                        ) {
-
-                            Haptics.success()
-
-                            engine.setVerified(
-                                p.id
-                            )
-                        }
-                        .transition(
-                            .move(edge: .top)
-                            .combined(
-                                with: .opacity
-                            )
-                        )
+                        engine.setVerified(p.id)
                     }
-
-                    if isSOS {
-
-                        BannerCard(
-                            icon:
-                                "exclamationmark.octagon.fill",
-                            text:
-                                "Emergency Broadcast active. Messages are signed and broadcast globally across the mesh."
-                        )
-                    }
-                }
-                .padding(
-                    .horizontal,
-                    12
-                )
-                .padding(
-                    .top,
-                    8
-                )
-                .animation(
-                    .spring(
-                        response: 0.4,
-                        dampingFraction: 0.85
-                    ),
-                    value:
-                        peer?.verified
-                )
-
-                ScrollViewReader { proxy in
-
-                    ScrollView {
-
-                        LazyVStack(
-                            spacing: 10
-                        ) {
-
-                            ForEach(
-                                msgs
-                            ) { m in
-
-                                bubble(m)
-                            }
-                        }
-                        .padding(
-                            .horizontal,
-                            14
-                        )
-                        .padding(
-                            .vertical,
-                            12
-                        )
-                        .animation(
-                            .spring(
-                                response: 0.45,
-                                dampingFraction: 0.82
-                            ),
-                            value:
-                                msgs.count
-                        )
-                    }
-                    .scrollDismissesKeyboard(
-                        .interactively
+                    .motionTransition(
+                        .move(edge: .top).combined(with: .opacity)
                     )
-                    .onChange(
-                        of: msgs.count
-                    ) { _ in
+                }
 
-                        scrollToEnd(
-                            proxy,
-                            animated: true
-                        )
-                    }
-                    .onAppear {
+                if isSOS {
 
-                        scrollToEnd(
-                            proxy,
-                            animated: false
-                        )
+                    BannerCard(
+                        icon: "exclamationmark.octagon.fill",
+                        text: "Emergency Broadcast active. Messages are signed and broadcast globally across the mesh."
+                    )
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .motion(Motion.standard, value: peer?.verified)
+
+            ScrollViewReader { proxy in
+
+                ScrollView {
+
+                    LazyVStack(spacing: 0) {
+
+                        ForEach(msgs) { m in
+
+                            bubble(m)
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .motion(Motion.standard, value: msgs.count)
+                }
+                .scrollDismissesKeyboard(.interactively)
+                .onChange(of: msgs.count) { _ in
+
+                    scrollToEnd(proxy, animated: true)
+                }
+                .onAppear {
+
+                    scrollToEnd(proxy, animated: false)
                 }
             }
         }
-        .safeAreaInset(
-            edge: .bottom
-        ) {
+        .safeAreaInset(edge: .bottom) {
             inputBar
         }
+        .background { AppBackground() }
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(
-            .inline
-        )
-        .toolbarColorScheme(
-            .dark,
-            for: .navigationBar
-        )
-        .onAppear {
-
-            guard isSOS else {
-                return
-            }
-
-            withAnimation(
-                .easeInOut(
-                    duration: 1.0
-                )
-                .repeatForever(
-                    autoreverses: true
-                )
-            ) {
-
-                glow = true
-            }
-        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
     }
 
     private func scrollToEnd(
@@ -2134,169 +1580,93 @@ struct ChatView: View {
 
             if animated {
 
-                withAnimation(
-                    .easeOut(
-                        duration: 0.3
-                    )
-                ) {
+                withAnimation(.easeOut(duration: 0.25)) {
 
-                    proxy.scrollTo(
-                        last.id,
-                        anchor: .bottom
-                    )
+                    proxy.scrollTo(last.id, anchor: .bottom)
                 }
 
             } else {
 
-                proxy.scrollTo(
-                    last.id,
-                    anchor: .bottom
-                )
+                proxy.scrollTo(last.id, anchor: .bottom)
             }
         }
     }
 
     @ViewBuilder
-    private func bubble(
-        _ m: ChatMessage
-    ) -> some View {
+    private func bubble(_ m: ChatMessage) -> some View {
 
         let who =
             engine.peers.first {
                 $0.id == m.senderId
             }?.nick
-            ??
-            String(
-                m.senderId.prefix(6)
-            )
+            ?? String(m.senderId.prefix(6))
+
+        let continuation = isContinuation(m)
 
         VStack(
-            alignment:
-                m.outgoing
-                ? .trailing
-                : .leading,
+            alignment: m.outgoing ? .trailing : .leading,
             spacing: 4
         ) {
 
-            if isGroup &&
-                !m.outgoing {
+            if isGroup && !m.outgoing && !continuation {
 
                 HStack(spacing: 4) {
 
-                    Image(
-                        systemName:
-                            "person.fill"
-                    )
-                    .font(.caption2)
+                    Image(systemName: "person.fill")
+                        .font(.caption2)
 
                     Text(who)
-                        .font(
-                            .subheadline.weight(
-                                .bold
-                            )
-                        )
+                        .font(.subheadline.weight(.bold))
+                        .lineLimit(1)
                 }
-                .foregroundStyle(
-                    Theme.accent
-                )
+                .foregroundStyle(Theme.accent)
             }
 
             if m.outgoing {
 
                 Text(m.text)
-                    .foregroundStyle(
-                        Color.white
-                    )
-                    .padding(
-                        .horizontal,
-                        15
-                    )
-                    .padding(
-                        .vertical,
-                        11
-                    )
-                    .background(
-                        Theme.outgoing,
-                        in:
-                            RoundedRectangle(
-                                cornerRadius: 21,
-                                style: .continuous
-                            )
-                    )
-                    .shadow(
-                        color:
-                            Theme.accent.opacity(
-                                0.35
-                            ),
-                        radius: 12,
-                        y: 6
+                    .foregroundStyle(Color.white)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .glassSurface(
+                        shape: RoundedRectangle(
+                            cornerRadius: 20,
+                            style: .continuous
+                        ),
+                        tint: Theme.outgoingTint.opacity(0.75)
                     )
 
             } else {
 
                 Text(m.text)
-                    .foregroundStyle(
-                        Color.white
-                    )
-                    .padding(
-                        .horizontal,
-                        15
-                    )
-                    .padding(
-                        .vertical,
-                        11
-                    )
-                    .glassCard(
-                        cornerRadius: 21
-                    )
+                    .foregroundStyle(Color.white)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .glassCard(cornerRadius: 20)
             }
 
             if m.outgoing {
 
-                statusBadge(
-                    m.status
-                )
-                .animation(
-                    .easeInOut(
-                        duration: 0.25
-                    ),
-                    value:
-                        m.status
-                )
+                statusBadge(m.status)
+                    .motion(Motion.quick, value: m.status)
             }
         }
-        .padding(
-            .leading,
-            m.outgoing ? 48 : 0
-        )
-        .padding(
-            .trailing,
-            m.outgoing ? 0 : 48
-        )
+        .padding(.leading, m.outgoing ? 56 : 0)
+        .padding(.trailing, m.outgoing ? 0 : 56)
         .frame(
             maxWidth: .infinity,
-            alignment:
-                m.outgoing
-                ? .trailing
-                : .leading
+            alignment: m.outgoing ? .trailing : .leading
         )
+        .padding(.top, continuation ? 2 : 10)
         .id(m.id)
-        .transition(
+        .motionTransition(
             .asymmetric(
-                insertion:
-                    .scale(
-                        scale: 0.8,
-                        anchor:
-                            m.outgoing
-                            ? .bottomTrailing
-                            : .bottomLeading
-                    )
-                    .combined(
-                        with: .opacity
-                    ),
-
-                removal:
-                    .opacity
+                insertion: .move(edge: .bottom).combined(with: .opacity),
+                removal: .opacity
             )
         )
         .onTapGesture {
@@ -2305,154 +1675,95 @@ struct ChatView: View {
 
                 Haptics.warning()
 
-                engine.retry(
-                    m.id
-                )
+                engine.retry(m.id)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(m.status == .failed ? .isButton : [])
+    }
+
+    private var sendButton: some View {
+
+        Button(action: sendNow) {
+
+            Image(systemName: "paperplane.fill")
+                .symbolRenderingMode(.hierarchical)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Color.white)
+                .frame(width: controlSize, height: controlSize)
+        }
+        .glassCircle(
+            tint: Theme.accent.opacity(0.7),
+            interactive: true
+        )
+        .accessibilityLabel("Send message")
+    }
+
+    private var sosButton: some View {
+
+        Button(action: sendNow) {
+
+            HStack(spacing: 6) {
+
+                Image(systemName: "exclamationmark.triangle.fill")
+
+                Text("SOS")
+            }
+            .font(.system(.subheadline, design: .rounded).weight(.heavy))
+            .foregroundStyle(Color.white)
+            .padding(.horizontal, 16)
+            .frame(minHeight: controlSize)
+        }
+        .glassCapsule(
+            tint: Theme.danger.opacity(0.85),
+            interactive: true
+        )
+        .padding(.leading, 4)
+        .accessibilityLabel("Send SOS")
+        .accessibilityHint("Broadcasts an emergency message to all nearby nodes")
     }
 
     private var inputBar: some View {
 
         GlassGroup(spacing: 8) {
 
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
 
                 TextField(
                     "",
                     text: $text,
-                    prompt:
-                        Text(
-                            "Secure message..."
-                        )
-                        .foregroundColor(
-                            Color.white.opacity(0.4)
-                        )
+                    prompt: Text("Secure message...")
+                        .foregroundColor(Color.white.opacity(0.55))
                 )
-                .font(
-                    .system(
-                        .body,
-                        design: .rounded
-                    )
-                )
-                .foregroundStyle(
-                    Color.white
-                )
-                .padding(
-                    .horizontal,
-                    16
-                )
-                .padding(
-                    .vertical,
-                    12
-                )
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity
-                )
-                .glassCard(
-                    cornerRadius: 100
-                )
+                .font(.system(.body, design: .rounded))
+                .foregroundStyle(Color.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .frame(minHeight: controlSize)
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .glassCapsule()
+                .accessibilityLabel("Message")
 
-                Button(
-                    action: sendNow
-                ) {
+                Group {
 
                     if isSOS {
 
-                        HStack(spacing: 4) {
-
-                            Image(
-                                systemName:
-                                    "exclamationmark.triangle.fill"
-                            )
-
-                            Text("SOS")
-                        }
-                        .font(
-                            .system(
-                                .subheadline,
-                                design: .rounded
-                            )
-                            .weight(.heavy)
-                        )
-                        .foregroundStyle(
-                            Color.white
-                        )
-                        .padding(
-                            .horizontal,
-                            13
-                        )
-                        .frame(
-                            height: 48
-                        )
+                        sosButton
 
                     } else {
 
-                        Image(
-                            systemName:
-                                "paperplane.fill"
-                        )
-                        .font(
-                            .system(
-                                size: 18,
-                                weight: .semibold
-                            )
-                        )
-                        .foregroundStyle(
-                            Color.white
-                        )
-                        .frame(
-                            width: 48,
-                            height: 48
-                        )
+                        sendButton
                     }
                 }
-                .glassCard(
-                    cornerRadius: 100,
-                    tint:
-                        isSOS
-                        ? Theme.danger
-                        : Theme.accent.opacity(0.7),
-                    interactive: true
-                )
-                .scaleEffect(
-                    bounce ? 1.12 : 1
-                )
-                .shadow(
-                    color:
-                        isSOS
-                        ? Theme.danger.opacity(
-                            glow ? 0.8 : 0.2
-                        )
-                        : Color.clear,
-                    radius:
-                        glow ? 18 : 6
-                )
+                .scaleEffect(bounce ? 0.94 : 1)
                 .disabled(isEmpty)
-                .opacity(
-                    isEmpty ? 0.5 : 1
-                )
-                .animation(
-                    .easeInOut(
-                        duration: 0.2
-                    ),
-                    value: isEmpty
-                )
-                .accessibilityLabel("Send message")
+                .opacity(isEmpty ? 0.5 : 1)
+                .motion(Motion.quick, value: isEmpty)
             }
-            .frame(
-                maxWidth: .infinity
-            )
+            .frame(maxWidth: .infinity)
         }
-        .padding(
-            .horizontal,
-            12
-        )
-        .padding(
-            .vertical,
-            8
-        )
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
     }
 
     private func sendNow() {
@@ -2461,10 +1772,7 @@ struct ChatView: View {
             return
         }
 
-        engine.send(
-            to: convId,
-            text
-        )
+        engine.send(to: convId, text)
 
         text = ""
 
@@ -2477,27 +1785,16 @@ struct ChatView: View {
             Haptics.tap()
         }
 
-        withAnimation(
-            .spring(
-                response: 0.25,
-                dampingFraction: 0.45
-            )
-        ) {
+        withAnimation(Motion.quick) {
 
             bounce = true
         }
 
         DispatchQueue.main.asyncAfter(
-            deadline:
-                .now() + 0.15
+            deadline: .now() + 0.15
         ) {
 
-            withAnimation(
-                .spring(
-                    response: 0.3,
-                    dampingFraction: 0.6
-                )
-            ) {
+            withAnimation(Motion.quick) {
 
                 bounce = false
             }
@@ -2517,386 +1814,253 @@ struct IdentityView: View {
     @State private var copied = false
     @State private var qrPic = UIImage()
 
+    private func identityNick(_ p: PeerView) -> some View {
+
+        Text(p.nick)
+            .font(.system(.headline, design: .rounded).weight(.semibold))
+            .foregroundStyle(Color.white)
+            .lineLimit(1)
+    }
+
+    private func identityBadge(_ p: PeerView) -> some View {
+
+        Label(
+            p.verified ? "Verified" : "Unverified",
+            systemImage: p.verified
+                ? "checkmark.seal.fill"
+                : "exclamationmark.shield"
+        )
+        .symbolRenderingMode(.hierarchical)
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(p.verified ? Theme.mint : Theme.danger)
+        .fixedSize()
+    }
+
     var body: some View {
 
-        ZStack {
+        ScrollView {
 
-            AppBackground()
+            VStack(spacing: 16) {
 
-            ScrollView {
+                // MARK: Fingerprint
+
+                VStack(alignment: .leading, spacing: 12) {
+
+                    Label(
+                        "Cryptographic Fingerprint",
+                        systemImage: "lock.shield.fill"
+                    )
+                    .symbolRenderingMode(.hierarchical)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Color.white)
+                    .accessibilityAddTraits(.isHeader)
+
+                    Text(Crypto.fingerprint(engine.me))
+                        .font(.system(.footnote, design: .monospaced))
+                        .foregroundStyle(Color.white)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+
+                    Button {
+
+                        UIPasteboard.general.string =
+                            Crypto.fingerprint(engine.me)
+
+                        Haptics.success()
+
+                        withAnimation(Motion.quick) {
+
+                            copied = true
+                        }
+
+                        DispatchQueue.main.asyncAfter(
+                            deadline: .now() + 1.5
+                        ) {
+
+                            withAnimation(Motion.quick) {
+
+                                copied = false
+                            }
+                        }
+
+                    } label: {
+
+                        Label(
+                            copied
+                            ? "Copied to Clipboard"
+                            : "Copy Fingerprint",
+                            systemImage: copied
+                                ? "checkmark.circle.fill"
+                                : "doc.on.doc"
+                        )
+                        .font(.subheadline.weight(.semibold))
+                        .symbolReplace()
+                        .frame(minHeight: 44, alignment: .leading)
+                    }
+                    .foregroundStyle(Theme.accent)
+                    .buttonStyle(PressableStyle())
+                }
+                .padding(18)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassCard(cornerRadius: 26)
+
+                // MARK: QR
 
                 VStack(spacing: 16) {
 
-                    // MARK: Fingerprint
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 10
-                    ) {
-
-                        SectionTitle(
-                            "Cryptographic Fingerprint"
-                        )
-
-                        Text(
-                            Crypto.fingerprint(
-                                engine.me
-                            )
-                        )
-                        .font(
-                            .system(
-                                .caption,
-                                design: .monospaced
-                            )
-                        )
-                        .foregroundStyle(
-                            Color.white
-                        )
-                        .lineLimit(3)
-                        .minimumScaleFactor(0.75)
-
-                        Button {
-
-                            UIPasteboard.general.string =
-                                Crypto.fingerprint(
-                                    engine.me
-                                )
-
-                            Haptics.success()
-
-                            withAnimation {
-
-                                copied = true
-                            }
-
-                            DispatchQueue.main.asyncAfter(
-                                deadline:
-                                    .now() + 1.5
-                            ) {
-
-                                withAnimation {
-
-                                    copied = false
-                                }
-                            }
-
-                        } label: {
-
-                            Label(
-                                copied
-                                ? "Copied to Clipboard"
-                                : "Copy Fingerprint",
-                                systemImage:
-                                    copied
-                                    ? "checkmark.circle.fill"
-                                    : "doc.on.doc"
-                            )
-                            .font(
-                                .subheadline.weight(
-                                    .semibold
-                                )
-                            )
-                        }
-                        .foregroundStyle(
-                            Theme.accent
-                        )
-                        .buttonStyle(
-                            PressableStyle()
-                        )
-                        .accessibilityLabel("Copy cryptographic fingerprint")
-                    }
-                    .padding(16)
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .leading
-                    )
-                    .glassCard(
-                        cornerRadius: 24
-                    )
-
-                    // MARK: QR
-
-                    VStack(spacing: 14) {
-
-                        Image(
-                            uiImage: qrPic
-                        )
+                    // QR sits on a clean white plate; no glass, blur or overlay over it.
+                    Image(uiImage: qrPic)
                         .interpolation(.none)
                         .resizable()
                         .scaledToFit()
-                        .frame(
-                            width: 210,
-                            height: 210
-                        )
-                        .padding(14)
+                        .frame(maxWidth: 240)
+                        .padding(16)
                         .background(
                             Color.white,
-                            in:
-                                RoundedRectangle(
-                                    cornerRadius: 26,
-                                    style: .continuous
-                                )
-                        )
-                        .shadow(
-                            color:
-                                Theme.accent.opacity(0.4),
-                            radius: 24
-                        )
-
-                        Text(
-                            "Show this QR code to a friend in person to securely verify your mesh identity."
-                        )
-                        .font(.subheadline)
-                        .multilineTextAlignment(
-                            .center
-                        )
-                        .foregroundStyle(
-                            Color.white.opacity(0.8)
-                        )
-                        .padding(
-                            .horizontal,
-                            8
-                        )
-
-                        Button {
-
-                            Haptics.tap()
-
-                            scanning = true
-
-                        } label: {
-
-                            Label(
-                                "Scan Peer QR Code",
-                                systemImage:
-                                    "qrcode.viewfinder"
-                            )
-                        }
-                        .buttonStyle(
-                            GlassButtonStyle(
-                                tint:
-                                    Theme.accent.opacity(0.7)
+                            in: RoundedRectangle(
+                                cornerRadius: 16,
+                                style: .continuous
                             )
                         )
-                        .accessibilityLabel("Scan peer QR code")
+                        .accessibilityLabel("Your identity QR code")
 
-                        if let r = result {
-
-                            Label(
-                                r,
-                                systemImage:
-                                    "checkmark.shield.fill"
-                            )
-                            .font(
-                                .subheadline.weight(
-                                    .semibold
-                                )
-                            )
-                            .foregroundStyle(
-                                Theme.mint
-                            )
-                            .multilineTextAlignment(
-                                .center
-                            )
-                            .transition(
-                                .scale
-                                .combined(
-                                    with: .opacity
-                                )
-                            )
-                        }
-                    }
-                    .padding(18)
-                    .frame(
-                        maxWidth: .infinity
+                    Text(
+                        "Show this QR code to a friend in person to securely verify your mesh identity."
                     )
-                    .glassCard(
-                        cornerRadius: 30
-                    )
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.white.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 8)
 
-                    SectionTitle(
-                        "Known Peer Identities"
-                    )
+                    if let r = result {
 
-                    // MARK: Known Peers
+                        let ok = r.hasPrefix("Successfully")
 
-                    ForEach(
-                        engine.peers
-                    ) { p in
-
-                        VStack(
-                            alignment: .leading,
-                            spacing: 7
-                        ) {
-
-                            HStack {
-
-                                Text(p.nick)
-                                    .font(
-                                        .system(
-                                            .headline,
-                                            design: .rounded
-                                        )
-                                        .weight(
-                                            .semibold
-                                        )
-                                    )
-                                    .foregroundStyle(
-                                        Color.white
-                                    )
-                                    .lineLimit(1)
-
-                                Spacer()
-
-                                Label(
-                                    p.verified
-                                    ? "Verified"
-                                    : "Unverified",
-                                    systemImage:
-                                        p.verified
-                                        ? "checkmark.seal.fill"
-                                        : "exclamationmark.shield"
-                                )
-                                .font(
-                                    .caption.weight(
-                                        .semibold
-                                    )
-                                )
-                                .foregroundStyle(
-                                    p.verified
-                                    ? Theme.mint
-                                    : Theme.danger
-                                )
-                            }
-
-                            Text(
-                                p.fingerprint
-                            )
-                            .font(
-                                .system(
-                                    .caption2,
-                                    design: .monospaced
-                                )
-                            )
-                            .foregroundStyle(
-                                Color.white.opacity(0.75)
-                            )
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.7)
-
-                            if !p.verified {
-
-                                Button(
-                                    "Confirm Fingerprint Match"
-                                ) {
-
-                                    Haptics.success()
-
-                                    engine.setVerified(
-                                        p.id
-                                    )
-                                }
-                                .font(
-                                    .subheadline.weight(
-                                        .semibold
-                                    )
-                                )
-                                .foregroundStyle(
-                                    Theme.accent
-                                )
-                                .buttonStyle(
-                                    PressableStyle()
-                                )
-                            }
-                        }
-                        .padding(14)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .leading
+                        Label(
+                            r,
+                            systemImage: ok
+                                ? "checkmark.shield.fill"
+                                : "xmark.shield.fill"
                         )
-                        .glassCard(
-                            cornerRadius: 22
-                        )
-                        .accessibilityElement(children: .combine)
-                        .transition(
-                            .opacity
-                            .combined(
-                                with:
-                                    .scale(
-                                        scale: 0.96
-                                    )
-                            )
-                        )
+                        .symbolRenderingMode(.hierarchical)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(ok ? Theme.mint : Theme.danger)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .motionTransition(.opacity)
                     }
                 }
-                .frame(
-                    maxWidth: 620
+                .padding(20)
+                .frame(maxWidth: .infinity)
+                .glassCard(cornerRadius: 28)
+
+                // Outside the card so glass never stacks on glass.
+                Button {
+
+                    Haptics.tap()
+
+                    scanning = true
+
+                } label: {
+
+                    Label(
+                        "Scan Peer QR Code",
+                        systemImage: "qrcode.viewfinder"
+                    )
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(
+                    GlassButtonStyle(tint: Theme.accent.opacity(0.7))
                 )
-                .padding(
-                    .horizontal,
-                    20
-                )
-                .padding(
-                    .bottom,
-                    28
-                )
-                .animation(
-                    .spring(
-                        response: 0.5,
-                        dampingFraction: 0.85
-                    ),
-                    value: result
-                )
-                .animation(
-                    .spring(
-                        response: 0.5,
-                        dampingFraction: 0.85
-                    ),
-                    value:
-                        engine.peers.count
-                )
+
+                SectionTitle("Known Peer Identities")
+
+                // MARK: Known Peers
+
+                ForEach(engine.peers) { p in
+
+                    VStack(alignment: .leading, spacing: 8) {
+
+                        ViewThatFits(in: .horizontal) {
+
+                            HStack(spacing: 8) {
+
+                                identityNick(p)
+
+                                Spacer(minLength: 8)
+
+                                identityBadge(p)
+                            }
+
+                            VStack(alignment: .leading, spacing: 4) {
+
+                                identityNick(p)
+
+                                identityBadge(p)
+                            }
+                        }
+
+                        Text(p.fingerprint)
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(Color.white.opacity(0.8))
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+
+                        if !p.verified {
+
+                            Button("Confirm Fingerprint Match") {
+
+                                Haptics.success()
+
+                                engine.setVerified(p.id)
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.accent)
+                            .frame(minHeight: 44, alignment: .leading)
+                            .buttonStyle(PressableStyle())
+                        }
+                    }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .glassCard(cornerRadius: 20)
+                    .motionTransition(.opacity)
+                }
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal, 20)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
+            .frame(maxWidth: 620)
+            .frame(maxWidth: .infinity)
+            .motion(Motion.standard, value: result)
+            .motion(Motion.standard, value: engine.peers.count)
         }
-        .navigationTitle(
-            "Identity & Security"
-        )
-        .toolbarColorScheme(
-            .dark,
-            for: .navigationBar
-        )
+        .scrollIndicators(.hidden)
+        .background { AppBackground() }
+        .navigationTitle("Identity & Security")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .onAppear {
 
-            qrPic = qrImage(
-                engine.myQr()
-            )
+            qrPic = qrImage(engine.myQr())
         }
-        .sheet(
-            isPresented: $scanning
-        ) {
+        .sheet(isPresented: $scanning) {
 
-            ZStack(
-                alignment: .topTrailing
-            ) {
+            ZStack(alignment: .topTrailing) {
 
                 QRScannerView { code in
 
                     scanning = false
 
-                    if let n =
-                        engine.verifyFromQr(
-                            code
-                        ) {
+                    if let n = engine.verifyFromQr(code) {
 
-                        result =
-                            "Successfully verified \(n)"
+                        result = "Successfully verified \(n)"
 
                         Haptics.success()
 
                     } else {
 
-                        result =
-                            "Invalid OffGrid QR code"
+                        result = "Invalid OffGrid QR code"
 
                         Haptics.warning()
                     }
@@ -2906,11 +2070,8 @@ struct IdentityView: View {
                 Button("Cancel") {
 
                     scanning = false
-
                 }
-                .buttonStyle(
-                    GlassButtonStyle()
-                )
+                .buttonStyle(GlassButtonStyle())
                 .padding()
             }
         }
@@ -2925,348 +2086,220 @@ struct RadiosView: View {
     @EnvironmentObject var engine: MeshEngine
 
     @AppStorage("selectedTheme")
-    private var selectedTheme: AppThemeStyle =
-        .midnightBlue
+    private var selectedTheme: AppThemeStyle = .midnightBlue
 
     @State private var host =
-        UserDefaults.standard.string(
-            forKey: "lanHost"
-        ) ?? ""
+        UserDefaults.standard.string(forKey: "lanHost") ?? ""
 
     @State private var confirmStop = false
 
+    private var restartButton: some View {
+
+        Button {
+
+            Haptics.tap()
+
+            engine.start()
+
+        } label: {
+
+            Label("Restart Node", systemImage: "arrow.clockwise")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(
+            GlassButtonStyle(tint: Theme.accent.opacity(0.7))
+        )
+    }
+
+    private var stopButton: some View {
+
+        Button(role: .destructive) {
+
+            confirmStop = true
+
+        } label: {
+
+            Label("Stop Mesh", systemImage: "power")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(
+            GlassButtonStyle(tint: Theme.danger.opacity(0.7))
+        )
+    }
+
     var body: some View {
 
-        ZStack {
+        ScrollView {
 
-            AppBackground()
+            VStack(spacing: 16) {
 
-            ScrollView {
+                // MARK: Theme
 
-                VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
 
-                    // MARK: Theme
+                    Label(
+                        "Visual Theme",
+                        systemImage: "paintpalette.fill"
+                    )
+                    .symbolRenderingMode(.hierarchical)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Color.white)
 
-                    VStack(
-                        alignment: .leading,
-                        spacing: 10
+                    Picker(
+                        "Theme",
+                        selection: $selectedTheme
                     ) {
 
-                        Label(
-                            "Visual Theme",
-                            systemImage:
-                                "paintpalette.fill"
-                        )
-                        .font(
-                            .system(
-                                .headline,
-                                design: .rounded
-                            )
-                        )
-                        .foregroundStyle(
-                            Color.white
-                        )
+                        ForEach(AppThemeStyle.allCases) { theme in
 
-                        Picker(
-                            "Theme",
-                            selection:
-                                $selectedTheme
-                        ) {
-
-                            ForEach(
-                                AppThemeStyle.allCases
-                            ) { theme in
-
-                                Text(
-                                    theme.rawValue
-                                )
+                            Text(theme.rawValue)
                                 .tag(theme)
-                            }
-                        }
-                        .pickerStyle(
-                            .segmented
-                        )
-
-                        Text(
-                            "Switch between Midnight Blue and Obsidian Teal design aesthetics."
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(
-                            Color.white.opacity(0.7)
-                        )
-                    }
-                    .padding(14)
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .leading
-                    )
-                    .glassCard(
-                        cornerRadius: 22
-                    )
-
-                    // MARK: Transports
-
-                    ForEach(
-                        engine.transportInfos
-                    ) { t in
-
-                        HStack(
-                            alignment: .top,
-                            spacing: 12
-                        ) {
-
-                            StatusDot(
-                                on:
-                                    t.state.active &&
-                                    t.state.links > 0,
-                                size: 9
-                            )
-
-                            VStack(
-                                alignment: .leading,
-                                spacing: 4
-                            ) {
-
-                                Text(
-                                    "\(t.label): \(t.state.active ? "Active" : "Inactive") · \(t.state.links) link(s)"
-                                )
-                                .font(
-                                    .system(
-                                        .headline,
-                                        design: .rounded
-                                    )
-                                    .weight(
-                                        .semibold
-                                    )
-                                )
-                                .foregroundStyle(
-                                    Color.white
-                                )
-                                .lineLimit(2)
-
-                                Text(
-                                    t.state.detail
-                                )
-                                .font(
-                                    .subheadline
-                                )
-                                .foregroundStyle(
-                                    Color.white.opacity(0.75)
-                                )
-
-                                if let e =
-                                    t.state.error {
-
-                                    Text(e)
-                                        .font(
-                                            .subheadline
-                                        )
-                                        .foregroundStyle(
-                                            Theme.danger
-                                        )
-                                }
-                            }
-
-                            Spacer(
-                                minLength: 0
-                            )
-                        }
-                        .padding(14)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .leading
-                        )
-                        .glassCard(
-                            cornerRadius: 22
-                        )
-                        .accessibilityElement(children: .combine)
-                        .transition(
-                            .move(
-                                edge: .leading
-                            )
-                            .combined(
-                                with: .opacity
-                            )
-                        )
-                    }
-
-                    // MARK: LAN Host
-
-                    SectionTitle(
-                        "Android Hotspot Host (Optional)"
-                    )
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 10
-                    ) {
-
-                        TextField(
-                            "",
-                            text: $host,
-                            prompt:
-                                Text(
-                                    "Host IP (e.g. 192.168.43.1)"
-                                )
-                                .foregroundColor(
-                                    Color.white.opacity(0.4)
-                                )
-                        )
-                        .font(
-                            .system(
-                                .body,
-                                design: .rounded
-                            )
-                        )
-                        .keyboardType(
-                            .numbersAndPunctuation
-                        )
-                        .autocorrectionDisabled()
-                        .foregroundStyle(
-                            Color.white
-                        )
-                        .padding(
-                            .horizontal,
-                            15
-                        )
-                        .padding(
-                            .vertical,
-                            13
-                        )
-                        .frame(
-                            maxWidth: .infinity
-                        )
-                        .glassCard(
-                            cornerRadius: 18
-                        )
-                        .onChange(
-                            of: host
-                        ) {
-                            engine.lan.manualHost =
-                                $0
-                        }
-
-                        Text(
-                            "Connect to the Android hotspot Wi-Fi in iOS Settings, then open this app and enable Local Network access."
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(
-                            Color.white.opacity(0.75)
-                        )
-                    }
-                    .padding(14)
-                    .glassCard(
-                        cornerRadius: 24
-                    )
-
-                    // MARK: Node Controls
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 12
-                    ) {
-
-                        Text(
-                            "iOS suspends background execution. Bluetooth maintains limited connectivity, but backgrounded iPhones may not be discoverable by Android nodes. Keep the app open for optimal mesh routing."
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(
-                            Color.white.opacity(0.75)
-                        )
-
-                        HStack(
-                            spacing: 8
-                        ) {
-
-                            Button {
-
-                                Haptics.tap()
-
-                                engine.start()
-
-                            } label: {
-
-                                Label(
-                                    "Restart Node",
-                                    systemImage:
-                                        "arrow.clockwise"
-                                )
-                            }
-                            .buttonStyle(
-                                GlassButtonStyle(
-                                    tint:
-                                        Theme.accent.opacity(
-                                            0.7
-                                        )
-                                )
-                            )
-                            .frame(
-                                maxWidth: .infinity
-                            )
-
-                            Button(
-                                role: .destructive
-                            ) {
-
-                                confirmStop = true
-
-                            } label: {
-
-                                Label(
-                                    "Stop Mesh",
-                                    systemImage:
-                                        "power"
-                                )
-                            }
-                            .buttonStyle(
-                                GlassButtonStyle(
-                                    tint:
-                                        Theme.danger.opacity(
-                                            0.7
-                                        )
-                                )
-                            )
-                            .frame(
-                                maxWidth: .infinity
-                            )
                         }
                     }
-                    .padding(14)
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .leading
+                    .pickerStyle(.segmented)
+
+                    Text(
+                        "Switch between Midnight Blue and Obsidian Teal design aesthetics."
                     )
-                    .glassCard(
-                        cornerRadius: 24
-                    )
+                    .font(.subheadline)
+                    .foregroundStyle(Color.white.opacity(0.75))
+                    .fixedSize(horizontal: false, vertical: true)
                 }
-                .frame(
-                    maxWidth: 620
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassCard(cornerRadius: 22)
+
+                // MARK: Transports
+
+                ForEach(engine.transportInfos) { t in
+
+                    HStack(alignment: .top, spacing: 12) {
+
+                        StatusDot(
+                            on: t.state.active && t.state.links > 0,
+                            size: 9
+                        )
+
+                        VStack(alignment: .leading, spacing: 4) {
+
+                            Text(
+                                "\(t.label): \(t.state.active ? "Active" : "Inactive") · \(t.state.links) link(s)"
+                            )
+                            .font(.system(.headline, design: .rounded).weight(.semibold))
+                            .foregroundStyle(Color.white)
+                            .lineLimit(3)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                            Text(t.state.detail)
+                                .font(.subheadline)
+                                .foregroundStyle(Color.white.opacity(0.8))
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            if let e = t.state.error {
+
+                                Label(e, systemImage: "exclamationmark.triangle.fill")
+                                    .font(.subheadline)
+                                    .foregroundStyle(Theme.danger)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .layoutPriority(1)
+                    }
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .glassCard(cornerRadius: 20)
+                    .motionTransition(
+                        .move(edge: .leading).combined(with: .opacity)
+                    )
+                    .accessibilityElement(children: .combine)
+                }
+
+                // MARK: LAN Host
+
+                SectionTitle("Android Hotspot Host (Optional)")
+
+                VStack(alignment: .leading, spacing: 12) {
+
+                    TextField(
+                        "",
+                        text: $host,
+                        prompt: Text("Host IP (e.g. 192.168.43.1)")
+                            .foregroundColor(Color.white.opacity(0.55))
+                    )
+                    .font(.system(.body, design: .rounded))
+                    .keyboardType(.numbersAndPunctuation)
+                    .autocorrectionDisabled()
+                    .foregroundStyle(Color.white)
+                    .fieldSurface()
+                    .accessibilityLabel("Hotspot host IP address")
+                    .onChange(of: host) {
+                        engine.lan.manualHost = $0
+                    }
+
+                    Text(
+                        "Connect to the Android hotspot Wi-Fi in iOS Settings, then open this app and enable Local Network access."
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(Color.white.opacity(0.8))
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassCard(cornerRadius: 24)
+
+                // MARK: Node Controls
+
+                Text(
+                    "iOS suspends background execution. Bluetooth maintains limited connectivity, but backgrounded iPhones may not be discoverable by Android nodes. Keep the app open for optimal mesh routing."
                 )
-                .padding(
-                    .horizontal,
-                    20
-                )
-                .padding(
-                    .bottom,
-                    28
-                )
+                .font(.subheadline)
+                .foregroundStyle(Color.white.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassCard(cornerRadius: 24)
+
+                // Buttons sit outside the card (no glass-on-glass) and stack on narrow widths.
+                GlassGroup(spacing: 12) {
+
+                    ViewThatFits(in: .horizontal) {
+
+                        HStack(spacing: 12) {
+
+                            restartButton
+                                .frame(maxWidth: .infinity)
+
+                            stopButton
+                                .frame(maxWidth: .infinity)
+                        }
+
+                        VStack(spacing: 12) {
+
+                            restartButton
+                                .frame(maxWidth: .infinity)
+
+                            stopButton
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal, 20)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
+            .frame(maxWidth: 620)
+            .frame(maxWidth: .infinity)
         }
-        .navigationTitle(
-            "Radios & Settings"
-        )
-        .toolbarColorScheme(
-            .dark,
-            for: .navigationBar
-        )
+        .scrollIndicators(.hidden)
+        .background { AppBackground() }
+        .navigationTitle("Radios & Settings")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .confirmationDialog(
             "Stop OffGrid Chat?",
-            isPresented:
-                $confirmStop,
-            titleVisibility:
-                .visible
+            isPresented: $confirmStop,
+            titleVisibility: .visible
         ) {
 
             Button(
