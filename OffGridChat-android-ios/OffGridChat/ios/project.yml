@@ -1,0 +1,33 @@
+name: OffGridChat
+options:
+  bundleIdPrefix: com.offgrid
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  OffGridChat:
+    type: application
+    platform: iOS
+    sources: [OffGridChat]
+    info:
+      path: OffGridChat/Info.plist
+      properties:
+        CFBundleDisplayName: OffGrid Chat
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSBluetoothAlwaysUsageDescription: OffGrid Chat uses Bluetooth to find and talk to nearby phones without internet.
+        NSLocalNetworkUsageDescription: OffGrid Chat talks to nearby phones over the local Wi-Fi/hotspot network. No internet is used.
+        NSCameraUsageDescription: The camera is used to scan a friend's QR code to verify their identity.
+        NSBonjourServices: ["_offgrid-chat._tcp", "_offgrid-chat._udp"]
+        UIBackgroundModes: [bluetooth-central, bluetooth-peripheral]
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.offgrid.chat
+        DEVELOPMENT_TEAM: ""
