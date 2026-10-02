@@ -367,7 +367,7 @@ struct NicknameView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Choose a nickname").font(.system(.headline, design: .rounded)).foregroundStyle(Color.white)
-                    TextField("", text: $nick, prompt: Text("Nickname").foregroundStyle(Color.white.opacity(0.5)))
+                    TextField("", text: $nick, prompt: Text("Nickname").foregroundColor(Color.white.opacity(0.5)))
                         .foregroundStyle(Color.white)
                         .padding(.horizontal, 16).padding(.vertical, 12)
                         .glassCard(cornerRadius: 16)
@@ -584,7 +584,7 @@ struct ChatView: View {
     private var inputBar: some View {
         GlassGroup(spacing: 10) {
             HStack(spacing: 10) {
-                TextField("", text: $text, prompt: Text("Message").foregroundStyle(Color.white.opacity(0.5)))
+                TextField("", text: $text, prompt: Text("Message").foregroundColor(Color.white.opacity(0.5)))
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 16).padding(.vertical, 12)
                     .glassCard(cornerRadius: 100)
@@ -754,8 +754,9 @@ struct RadiosView: View {
 
                     SectionTitle("Android hotspot host (optional)")
                     VStack(alignment: .leading, spacing: 10) {
-                        TextField("", text: $host,
-                                  prompt: Text("Host IP (blank = auto, e.g. 192.168.43.1)").foregroundStyle(Color.white.opacity(0.5)))
+                        TextField("",
+                                  text: $host,
+                                  prompt: Text("Host IP (blank = auto, e.g. 192.168.43.1)").foregroundColor(Color.white.opacity(0.5)))
                             .keyboardType(.numbersAndPunctuation).autocorrectionDisabled()
                             .foregroundStyle(Color.white)
                             .padding(.horizontal, 14).padding(.vertical, 12)
