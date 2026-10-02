@@ -15,7 +15,23 @@ enum AppThemeStyle: String, CaseIterable, Identifiable {
 }
 
 struct ThemeManager {
-    @AppStorage("selectedTheme") static var currentTheme: AppThemeStyle = .midnightBlue
+    static let key = "selectedTheme"
+
+    static var currentTheme: AppThemeStyle {
+        get {
+            let rawValue = UserDefaults.standard.string(forKey: key)
+                ?? AppThemeStyle.midnightBlue.rawValue
+
+            return AppThemeStyle(rawValue: rawValue)
+                ?? .midnightBlue
+        }
+        set {
+            UserDefaults.standard.set(
+                newValue.rawValue,
+                forKey: key
+            )
+        }
+    }
 }
 
 struct Theme {
@@ -112,16 +128,25 @@ extension View {
     }
 }
 
-struct GlassGroup: View {
+
+struct GlassGroup<Content: View>: View {
     let spacing: CGFloat
     let content: () -> Content
-    init(spacing: CGFloat = 12, @ViewBuilder content: @escaping () -> Content) {
-        self.spacing = spacing; self.content = content
+
+    init(
+        spacing: CGFloat = 12,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.spacing = spacing
+        self.content = content
     }
+
     var body: some View {
         #if compiler(>=6.2)
         if #available(iOS 26.0, *) {
-            GlassEffectContainer(spacing: spacing) { content() }
+            GlassEffectContainer(spacing: spacing) {
+                content()
+            }
         } else {
             content()
         }
@@ -130,6 +155,7 @@ struct GlassGroup: View {
         #endif
     }
 }
+
 
 struct GlassButtonStyle: ButtonStyle {
     var tint: Color? = nil
@@ -415,6 +441,9 @@ struct TransportChip: View {
 
 struct RootView: View {
     @EnvironmentObject var engine: MeshEngine
+
+    @AppStorage("selectedTheme")
+    private var selectedTheme: AppThemeStyle = .midnightBlue
     var body: some View {
         Group {
             if engine.nickname.isEmpty {
@@ -426,6 +455,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.5), value: engine.nickname.isEmpty)
         .preferredColorScheme(.dark)
         .tint(Theme.accent)
+        .id(selectedTheme)
     }
 }
 
@@ -686,7 +716,6 @@ struct ChatView: View {
             }
             if m.outgoing {
                 statusBadge(m.status)
-                    .contentTransition(.opacity)
                     .animation(.easeInOut(duration: 0.25), value: m.status)
             }
         }
@@ -856,9 +885,12 @@ struct IdentityView: View {
 
 struct RadiosView: View {
     @EnvironmentObject var engine: MeshEngine
+
+    @AppStorage("selectedTheme")
+    private var selectedTheme: AppThemeStyle = .midnightBlue
+
     @State private var host = UserDefaults.standard.string(forKey: "lanHost") ?? ""
     @State private var confirmStop = false
-
     var body: some View {
         ZStack {
             AppBackground()
@@ -870,12 +902,11 @@ struct RadiosView: View {
                             .font(.system(.headline, design: .rounded))
                             .foregroundStyle(Color.white)
                         
-                        Picker("Theme", selection: Binding(
-                            get: { ThemeManager.currentTheme },
-                            set: { ThemeManager.currentTheme = $0 }
-                        )) {
+                    
+                        Picker("Theme", selection: $selectedTheme) {
                             ForEach(AppThemeStyle.allCases) { theme in
-                                Text(theme.rawValue).tag(theme)
+                                Text(theme.rawValue)
+                                    .tag(theme)
                             }
                         }
                         .pickerStyle(.segmented)
