@@ -9,10 +9,10 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate Xcode project
-        working-directory: ios
+        working-directory: OffGridChat-android-ios/OffGridChat/ios
         run: xcodegen
       - name: Build unsigned app
-        working-directory: ios
+        working-directory: OffGridChat-android-ios/OffGridChat/ios
         run: |
           xcodebuild -project OffGridChat.xcodeproj -scheme OffGridChat \
             -configuration Release -sdk iphoneos -derivedDataPath build \
@@ -23,4 +23,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: OffGridChat-ipa
-          path: ios/OffGridChat.ipa
+          path: OffGridChat-android-ios/OffGridChat/ios/OffGridChat.ipa
