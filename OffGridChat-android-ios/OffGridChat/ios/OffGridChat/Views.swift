@@ -196,7 +196,7 @@ enum Haptics {
 }
 
 
-// MARK: - Liquid Glass
+// MARK: - Liquid Glass & Modifiers
 
 #if compiler(>=6.2)
 
@@ -222,45 +222,72 @@ private func makeGlass(
 #endif
 
 
+struct GlassCardModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let tint: Color?
+    let interactive: Bool
+    let glassID: String?
+    let namespace: Namespace.ID?
+
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    func body(content: Content) -> some View {
+        if reduceTransparency {
+            content
+                .background(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(Theme.base.opacity(0.95))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(tint ?? Color.white.opacity(0.3), lineWidth: 1)
+                )
+        } else {
+            #if compiler(>=6.2)
+            if #available(iOS 26.0, *) {
+                var g = Glass.regular
+                if let tint {
+                    g = g.tint(tint)
+                }
+                if interactive {
+                    g = g.interactive()
+                }
+                let baseView = content.glassEffect(g, in: .rect(cornerRadius: cornerRadius))
+                if let glassID, let namespace {
+                    baseView.glassEffectID(glassID, in: namespace)
+                } else {
+                    baseView
+                }
+            } else {
+                content.frostedGlass(cornerRadius: cornerRadius, tint: tint)
+            }
+            #else
+            content.frostedGlass(cornerRadius: cornerRadius, tint: tint)
+            #endif
+        }
+    }
+}
+
+
 extension View {
 
     @ViewBuilder
     func glassCard(
         cornerRadius: CGFloat = 24,
         tint: Color? = nil,
-        interactive: Bool = false
+        interactive: Bool = false,
+        glassID: String? = nil,
+        namespace: Namespace.ID? = nil
     ) -> some View {
-
-        #if compiler(>=6.2)
-
-        if #available(iOS 26.0, *) {
-
-            self.glassEffect(
-                makeGlass(
-                    tint: tint,
-                    interactive: interactive
-                ),
-                in: .rect(
-                    cornerRadius: cornerRadius
-                )
-            )
-
-        } else {
-
-            self.frostedGlass(
+        self.modifier(
+            GlassCardModifier(
                 cornerRadius: cornerRadius,
-                tint: tint
+                tint: tint,
+                interactive: interactive,
+                glassID: glassID,
+                namespace: namespace
             )
-        }
-
-        #else
-
-        self.frostedGlass(
-            cornerRadius: cornerRadius,
-            tint: tint
         )
-
-        #endif
     }
 
     fileprivate func frostedGlass(
@@ -321,12 +348,25 @@ extension View {
                 y: 10
             )
     }
+
+    @ViewBuilder
+    func glassTransition() -> some View {
+        #if compiler(>=6.2)
+        if #available(iOS 26.0, *) {
+            self.glassEffectTransition()
+        } else {
+            self.transition(.opacity)
+        }
+        #else
+        self.transition(.opacity)
+        #endif
+    }
 }
 
 
 // MARK: - Glass Group
 
-struct GlassGroup<Content: View>: View {
+struct GlassGroup: View {
 
     let spacing: CGFloat
     let content: () -> Content
@@ -392,15 +432,15 @@ struct GlassButtonStyle: ButtonStyle {
                 interactive: true
             )
             .scaleEffect(
-                configuration.isPressed ? 0.94 : 1
+                configuration.isPressed ? 0.96 : 1
             )
             .brightness(
                 configuration.isPressed ? 0.08 : 0
             )
             .animation(
                 .spring(
-                    response: 0.28,
-                    dampingFraction: 0.58
+                    response: 0.3,
+                    dampingFraction: 0.7
                 ),
                 value: configuration.isPressed
             )
@@ -416,7 +456,7 @@ struct PressableStyle: ButtonStyle {
 
         configuration.label
             .scaleEffect(
-                configuration.isPressed ? 0.975 : 1
+                configuration.isPressed ? 0.96 : 1
             )
             .brightness(
                 configuration.isPressed ? 0.06 : 0
@@ -426,8 +466,8 @@ struct PressableStyle: ButtonStyle {
             )
             .animation(
                 .spring(
-                    response: 0.28,
-                    dampingFraction: 0.68
+                    response: 0.3,
+                    dampingFraction: 0.7
                 ),
                 value: configuration.isPressed
             )
@@ -1023,6 +1063,7 @@ struct RowCard: View {
             cornerRadius: 24,
             tint: tint.opacity(0.12)
         )
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -1123,6 +1164,7 @@ struct PeerRow: View {
         .glassCard(
             cornerRadius: 24
         )
+        .accessibilityElement(children: .combine)
         .animation(
             .easeInOut(duration: 0.3),
             value: p.verified
@@ -1181,6 +1223,7 @@ struct BannerCard: View {
                 .buttonStyle(
                     PressableStyle()
                 )
+                .accessibilityLabel(actionTitle)
             }
         }
         .padding(14)
@@ -1192,6 +1235,7 @@ struct BannerCard: View {
             cornerRadius: 20,
             tint: tint.opacity(0.28)
         )
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -1239,6 +1283,7 @@ struct TransportChip: View {
         .glassCard(
             cornerRadius: 100
         )
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -1522,6 +1567,8 @@ struct PeersView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
+    @Namespace private var peerNamespace
+
     private var peerKey: [String] {
         engine.peers.map {
             $0.id +
@@ -1556,6 +1603,7 @@ struct PeersView: View {
                                     TransportChip(
                                         info: $0
                                     )
+                                    .glassTransition()
                                 }
                             }
                             .padding(
@@ -1722,6 +1770,7 @@ struct PeersView: View {
                             PeerRow(
                                 p: p
                             )
+                            .glassCard(cornerRadius: 24, glassID: p.id, namespace: peerNamespace)
                         }
                         .buttonStyle(
                             PressableStyle()
@@ -1786,9 +1835,8 @@ struct PeersView: View {
                             "qrcode.viewfinder"
                     )
                 }
-                .accessibilityLabel(
-                    "Identity"
-                )
+                .accessibilityLabel("Identity & QR")
+                .accessibilityHint("View your cryptographic fingerprint and QR code")
 
                 NavigationLink {
 
@@ -1801,9 +1849,8 @@ struct PeersView: View {
                             "waveform.badge.magnifyingglass"
                     )
                 }
-                .accessibilityLabel(
-                    "Radios & Settings"
-                )
+                .accessibilityLabel("Radios & Settings")
+                .accessibilityHint("Configure mesh transports and visual themes")
             }
         }
     }
@@ -2392,6 +2439,7 @@ struct ChatView: View {
                     ),
                     value: isEmpty
                 )
+                .accessibilityLabel("Send message")
             }
             .frame(
                 maxWidth: .infinity
@@ -2555,6 +2603,7 @@ struct IdentityView: View {
                         .buttonStyle(
                             PressableStyle()
                         )
+                        .accessibilityLabel("Copy cryptographic fingerprint")
                     }
                     .padding(16)
                     .frame(
@@ -2629,6 +2678,7 @@ struct IdentityView: View {
                                     Theme.accent.opacity(0.7)
                             )
                         )
+                        .accessibilityLabel("Scan peer QR code")
 
                         if let r = result {
 
@@ -2767,6 +2817,7 @@ struct IdentityView: View {
                         .glassCard(
                             cornerRadius: 22
                         )
+                        .accessibilityElement(children: .combine)
                         .transition(
                             .opacity
                             .combined(
@@ -3028,6 +3079,7 @@ struct RadiosView: View {
                         .glassCard(
                             cornerRadius: 22
                         )
+                        .accessibilityElement(children: .combine)
                         .transition(
                             .move(
                                 edge: .leading
