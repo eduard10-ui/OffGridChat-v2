@@ -91,7 +91,7 @@ extension View {
 }
 
 /// Lets nearby glass shapes blend/morph together on iOS 26+; pass-through otherwise.
-struct GlassGroup: View {
+struct GlassGroup<Content: View>: View {
     let spacing: CGFloat
     let content: () -> Content
     init(spacing: CGFloat = 12, @ViewBuilder content: @escaping () -> Content) {
@@ -157,10 +157,16 @@ struct MeshBackground: View {
             let t = reduceMotion ? 0.0 : ctx.date.timeIntervalSinceReferenceDate
             let dx = Float(0.12 * sin(t * 0.25))
             let dy = Float(0.12 * cos(t * 0.20))
-            let points: [SIMD2] = [
-                SIMD2(0, 0), SIMD2(0.5 + dx, 0), SIMD2(1, 0),
-                SIMD2(0, 0.5 - dy), SIMD2(0.5 + dy, 0.5 + dx), SIMD2(1, 0.5 + dy),
-                SIMD2(0, 1), SIMD2(0.5 - dx, 1), SIMD2(1, 1)
+            let points: [SIMD2<Float>] = [
+                SIMD2<Float>(0, 0),
+                SIMD2<Float>(0.5 + dx, 0),
+                SIMD2<Float>(1, 0),
+                SIMD2<Float>(0, 0.5 - dy),
+                SIMD2<Float>(0.5 + dy, 0.5 + dx),
+                SIMD2<Float>(1, 0.5 + dy),
+                SIMD2<Float>(0, 1),
+                SIMD2<Float>(0.5 - dx, 1),
+                SIMD2<Float>(1, 1)
             ]
             MeshGradient(width: 3, height: 3, points: points, colors: [
                 Theme.deep, Theme.violet, Theme.deep,
