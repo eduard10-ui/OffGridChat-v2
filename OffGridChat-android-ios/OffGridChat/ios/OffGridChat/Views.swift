@@ -2166,35 +2166,28 @@ struct PeersView: View {
             // MARK: Custom Navigation Header
 
             ToolbarItem(
-                placement:
-                    .navigationBarLeading
+                placement: .navigationBarLeading
             ) {
-
                 HStack(spacing: 8) {
-
+            
                     AnimationView()
-                        .frame(
-                            width: 38,
-                            height: 38
-                        )
-
-                    VStack(
-                        alignment: .leading,
-                        spacing: 1
-                    ) {
-
+                        .frame(width: 38, height: 38)
+            
+                    VStack(alignment: .leading, spacing: 1) {
+            
                         Text("MENSAGIP")
-                            Text("MENSAGIP") .font(.system(size: 32, weight: .bold, design: .default)).foregroundStyle(Color.white)
-
+                            .font(.system(.subheadline, design: .rounded).weight(.bold))
+                            .foregroundStyle(Color.white)
+                            .lineLimit(1)
+            
                         Text("OffGrid Chat")
-                            .font(.system(size: 24, weight: .bold, design: .default))
-                            .foregroundStyle(
-                                Color.white.opacity(0.55)
-                            )
+                            .font(.system(.caption2, design: .rounded))
+                            .foregroundStyle(Color.white.opacity(0.55))
+                            .lineLimit(1)
                     }
+                    .fixedSize()
                 }
             }
-
             // MARK: Toolbar Actions
 
             ToolbarItemGroup(
