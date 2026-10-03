@@ -368,7 +368,7 @@ private func makeGlass(
 
 // MARK: - Glass Edge
 
-private struct GlassEdge<ShapeType: Shape>: View {
+private struct GlassEdge<ShapeType: InsettableShape>: View {
 
     let shape: ShapeType
 
@@ -394,7 +394,7 @@ private struct GlassEdge<ShapeType: Shape>: View {
 
 // MARK: - Glass Surface
 
-struct GlassSurface<ShapeType: Shape>: ViewModifier {
+struct GlassSurface<ShapeType: InsettableShape>: ViewModifier {
 
     @Environment(\.accessibilityReduceTransparency)
     private var reduceTransparency
@@ -475,7 +475,7 @@ struct GlassSurface<ShapeType: Shape>: ViewModifier {
 extension View {
 
     /// Material fallback for systems below iOS 26.
-    func frostedSurface<ShapeType: Shape>(
+    func frostedSurface<ShapeType: InsettableShape>(
         in shape: ShapeType,
         tint: Color?
     ) -> some View {
@@ -504,7 +504,7 @@ extension View {
             )
     }
 
-    func glassSurface<ShapeType: Shape>(
+    func glassSurface<ShapeType: InsettableShape>(
         shape: ShapeType,
         style: GlassSurfaceStyle = .regular,
         tint: Color? = nil,
