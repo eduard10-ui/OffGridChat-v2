@@ -2184,24 +2184,10 @@ struct PeersView: View {
                     ) {
 
                         Text("MENSAGIP")
-                            .font(
-                                .system(
-                                    .subheadline,
-                                    design: .rounded
-                                )
-                                .weight(.bold)
-                            )
-                            .foregroundStyle(
-                                Color.white
-                            )
+                            Text("MENSAGIP") .font(.system(size: 32, weight: .bold, design: .default)).foregroundStyle(Color.white)
 
                         Text("OffGrid Chat")
-                            .font(
-                                .system(
-                                    .caption2,
-                                    design: .rounded
-                                )
-                            )
+                            .font(.system(size: 24, weight: .bold, design: .default))
                             .foregroundStyle(
                                 Color.white.opacity(0.55)
                             )
