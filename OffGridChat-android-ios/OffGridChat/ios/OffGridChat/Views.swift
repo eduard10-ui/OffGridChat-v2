@@ -17,7 +17,9 @@ enum AppThemeStyle: String, CaseIterable, Identifiable {
     case midnightBlue = "Midnight Blue"
     case obsidianTeal = "Obsidian Teal"
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 }
 
 struct ThemeManager {
@@ -27,8 +29,10 @@ struct ThemeManager {
         get {
             let rawValue = UserDefaults.standard.string(forKey: key)
                 ?? AppThemeStyle.midnightBlue.rawValue
+
             return AppThemeStyle(rawValue: rawValue) ?? .midnightBlue
         }
+
         set {
             UserDefaults.standard.set(newValue.rawValue, forKey: key)
         }
@@ -39,55 +43,111 @@ struct Theme {
 
     static var base: Color {
         switch ThemeManager.currentTheme {
+
         case .midnightBlue:
-            return Color(red: 0.02, green: 0.02, blue: 0.08)
+            return Color(
+                red: 0.02,
+                green: 0.02,
+                blue: 0.08
+            )
+
         case .obsidianTeal:
-            return Color(red: 0.01, green: 0.05, blue: 0.06)
+            return Color(
+                red: 0.01,
+                green: 0.05,
+                blue: 0.06
+            )
         }
     }
 
     static var accent: Color {
         switch ThemeManager.currentTheme {
+
         case .midnightBlue:
-            return Color(red: 0.20, green: 0.55, blue: 1.00)
+            return Color(
+                red: 0.20,
+                green: 0.55,
+                blue: 1.00
+            )
+
         case .obsidianTeal:
-            return Color(red: 0.00, green: 0.85, blue: 0.75)
+            return Color(
+                red: 0.00,
+                green: 0.85,
+                blue: 0.75
+            )
         }
     }
 
     static var secondaryAccent: Color {
         switch ThemeManager.currentTheme {
+
         case .midnightBlue:
-            return Color(red: 0.55, green: 0.30, blue: 0.95)
+            return Color(
+                red: 0.55,
+                green: 0.30,
+                blue: 0.95
+            )
+
         case .obsidianTeal:
-            return Color(red: 0.10, green: 0.50, blue: 0.60)
+            return Color(
+                red: 0.10,
+                green: 0.50,
+                blue: 0.60
+            )
         }
     }
 
     static var mint: Color {
-        Color(red: 0.30, green: 0.92, blue: 0.65)
+        Color(
+            red: 0.30,
+            green: 0.92,
+            blue: 0.65
+        )
     }
 
     static var danger: Color {
-        Color(red: 1.00, green: 0.30, blue: 0.40)
+        Color(
+            red: 1.00,
+            green: 0.30,
+            blue: 0.40
+        )
     }
 
     static var outgoing: LinearGradient {
         switch ThemeManager.currentTheme {
+
         case .midnightBlue:
             return LinearGradient(
                 colors: [
-                    Color(red: 0.15, green: 0.50, blue: 1.0),
-                    Color(red: 0.45, green: 0.28, blue: 0.95)
+                    Color(
+                        red: 0.15,
+                        green: 0.50,
+                        blue: 1.0
+                    ),
+                    Color(
+                        red: 0.45,
+                        green: 0.28,
+                        blue: 0.95
+                    )
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
+
         case .obsidianTeal:
             return LinearGradient(
                 colors: [
-                    Color(red: 0.00, green: 0.70, blue: 0.65),
-                    Color(red: 0.05, green: 0.35, blue: 0.55)
+                    Color(
+                        red: 0.00,
+                        green: 0.70,
+                        blue: 0.65
+                    ),
+                    Color(
+                        red: 0.05,
+                        green: 0.35,
+                        blue: 0.55
+                    )
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -98,16 +158,30 @@ struct Theme {
     /// Darker accent used to tint outgoing glass bubbles so white text stays legible.
     static var outgoingTint: Color {
         switch ThemeManager.currentTheme {
+
         case .midnightBlue:
-            return Color(red: 0.12, green: 0.42, blue: 0.95)
+            return Color(
+                red: 0.12,
+                green: 0.42,
+                blue: 0.95
+            )
+
         case .obsidianTeal:
-            return Color(red: 0.00, green: 0.52, blue: 0.52)
+            return Color(
+                red: 0.00,
+                green: 0.52,
+                blue: 0.52
+            )
         }
     }
 
     static var title: LinearGradient {
         LinearGradient(
-            colors: [Color.white, accent, secondaryAccent],
+            colors: [
+                Color.white,
+                accent,
+                secondaryAccent
+            ],
             startPoint: .leading,
             endPoint: .trailing
         )
@@ -120,83 +194,130 @@ struct Theme {
 enum Haptics {
 
     static func tap() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        UIImpactFeedbackGenerator(
+            style: .light
+        ).impactOccurred()
     }
 
     static func success() {
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        UINotificationFeedbackGenerator()
+            .notificationOccurred(.success)
     }
 
     static func warning() {
-        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        UINotificationFeedbackGenerator()
+            .notificationOccurred(.warning)
     }
 }
 
 
-// MARK: - Motion (short, smooth, non-looping; Reduce Motion aware)
+// MARK: - Motion
 
 enum Motion {
-    static let quick = Animation.easeInOut(duration: 0.25)
-    static let standard = Animation.spring(response: 0.38, dampingFraction: 0.86)
-    static let theme = Animation.easeInOut(duration: 0.3)
+
+    static let quick =
+        Animation.easeInOut(duration: 0.25)
+
+    static let standard =
+        Animation.easeInOut(duration: 0.30)
+
+    static let theme =
+        Animation.easeInOut(duration: 0.30)
 }
 
-struct MotionAnimationModifier: ViewModifier {
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+// MARK: - Motion Animation Modifier
+
+struct MotionAnimationModifier<Value: Equatable>: ViewModifier {
+
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
 
     let animation: Animation
-    let value: V
+    let value: Value
 
     func body(content: Content) -> some View {
+
         content.animation(
-            reduceMotion ? Animation.easeInOut(duration: 0.15) : animation,
+            reduceMotion
+                ? Animation.easeInOut(duration: 0.15)
+                : animation,
             value: value
         )
     }
 }
 
+
+// MARK: - Motion Transition Modifier
+
 struct MotionTransitionModifier: ViewModifier {
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
 
     let transition: AnyTransition
 
     func body(content: Content) -> some View {
-        content.transition(reduceMotion ? AnyTransition.opacity : transition)
+
+        content.transition(
+            reduceMotion
+                ? AnyTransition.opacity
+                : transition
+        )
     }
 }
 
+
 extension View {
 
-    func motion(
+    func motion<Value: Equatable>(
         _ animation: Animation = Motion.standard,
-        value: V
+        value: Value
     ) -> some View {
-        modifier(MotionAnimationModifier(animation: animation, value: value))
+
+        modifier(
+            MotionAnimationModifier(
+                animation: animation,
+                value: value
+            )
+        )
     }
 
-    func motionTransition(_ transition: AnyTransition) -> some View {
-        modifier(MotionTransitionModifier(transition: transition))
+    func motionTransition(
+        _ transition: AnyTransition
+    ) -> some View {
+
+        modifier(
+            MotionTransitionModifier(
+                transition: transition
+            )
+        )
     }
 
     @ViewBuilder
     func symbolReplace() -> some View {
+
         if #available(iOS 17.0, *) {
-            self.contentTransition(.symbolEffect(.replace))
+
+            self.contentTransition(
+                .symbolEffect(.replace)
+            )
+
         } else {
+
             self
         }
     }
 }
 
 
-// MARK: - Liquid Glass (centralized)
+// MARK: - Liquid Glass
 
 enum GlassSurfaceStyle {
     case regular
     case clear
 }
+
 
 #if compiler(>=6.2)
 
@@ -207,17 +328,26 @@ private func makeGlass(
     interactive: Bool
 ) -> Glass {
 
-    var g: Glass = (style == .clear) ? Glass.clear : Glass.regular
+    var glass: Glass
+
+    switch style {
+
+    case .regular:
+        glass = .regular
+
+    case .clear:
+        glass = .clear
+    }
 
     if let tint {
-        g = g.tint(tint)
+        glass = glass.tint(tint)
     }
 
     if interactive {
-        g = g.interactive()
+        glass = glass.interactive()
     }
 
-    return g
+    return glass
 }
 
 @available(iOS 26.0, *)
@@ -225,24 +355,32 @@ private func makeGlass(
     tint: Color?,
     interactive: Bool
 ) -> Glass {
-    makeGlass(style: .regular, tint: tint, interactive: interactive)
+
+    makeGlass(
+        style: .regular,
+        tint: tint,
+        interactive: interactive
+    )
 }
 
 #endif
 
-/// Minimal rim: brighter top-leading, fading to near-clear / slightly dark bottom-trailing.
-private struct GlassEdge: View {
 
-    let shape: S
+// MARK: - Glass Edge
+
+private struct GlassEdge<ShapeType: Shape>: View {
+
+    let shape: ShapeType
 
     var body: some View {
+
         shape
             .strokeBorder(
                 LinearGradient(
                     colors: [
-                        Color.white.opacity(0.28),
-                        Color.white.opacity(0.04),
-                        Color.black.opacity(0.12)
+                        Color.white.opacity(0.30),
+                        Color.white.opacity(0.06),
+                        Color.black.opacity(0.16)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -253,12 +391,16 @@ private struct GlassEdge: View {
     }
 }
 
-/// The single place where glass availability, fallback and Reduce Transparency are decided.
-struct GlassSurface: ViewModifier {
 
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+// MARK: - Glass Surface
 
-    let shape: S
+struct GlassSurface<ShapeType: Shape>: ViewModifier {
+
+    @Environment(\.accessibilityReduceTransparency)
+    private var reduceTransparency
+
+    let shape: ShapeType
+
     var style: GlassSurfaceStyle = .regular
     var tint: Color? = nil
     var interactive: Bool = false
@@ -271,11 +413,14 @@ struct GlassSurface: ViewModifier {
             content
                 .background(
                     shape.fill(
-                        (tint ?? Color.white).opacity(tint == nil ? 0.12 : 0.35)
+                        tint == nil
+                            ? Theme.base.opacity(0.94)
+                            : (tint ?? Theme.base).opacity(0.92)
                     )
                 )
-                .background(shape.fill(Theme.base))
-                .overlay(GlassEdge(shape: shape))
+                .overlay(
+                    GlassEdge(shape: shape)
+                )
 
         } else {
 
@@ -284,18 +429,15 @@ struct GlassSurface: ViewModifier {
     }
 
     @ViewBuilder
-    private func glass(_ content: Content) -> some View {
+    private func glass(
+        _ content: Content
+    ) -> some View {
 
         #if compiler(>=6.2)
 
         if #available(iOS 26.0, *) {
 
             content
-                .background(
-                    shape.fill(
-                        Color.black.opacity(style == .clear ? 0.22 : 0)
-                    )
-                )
                 .glassEffect(
                     makeGlass(
                         style: style,
@@ -304,50 +446,71 @@ struct GlassSurface: ViewModifier {
                     ),
                     in: shape
                 )
-                .overlay(GlassEdge(shape: shape))
+                .overlay(
+                    GlassEdge(shape: shape)
+                )
 
         } else {
 
-            content.frostedSurface(in: shape, tint: tint)
+            content.frostedSurface(
+                in: shape,
+                tint: tint
+            )
         }
 
         #else
 
-        content.frostedSurface(in: shape, tint: tint)
+        content.frostedSurface(
+            in: shape,
+            tint: tint
+        )
 
         #endif
     }
 }
 
+
+// MARK: - Glass Extensions
+
 extension View {
 
-    /// Material fallback (iOS < 26): ultraThinMaterial + tint wash + hairline gradient stroke.
-    func frostedSurface(
-        in shape: S,
+    /// Material fallback for systems below iOS 26.
+    func frostedSurface<ShapeType: Shape>(
+        in shape: ShapeType,
         tint: Color?
     ) -> some View {
 
         self
-            .background(.ultraThinMaterial, in: shape)
+            .background(
+                .ultraThinMaterial,
+                in: shape
+            )
             .background(
                 shape.fill(
-                    (tint ?? Color.white).opacity(tint == nil ? 0.06 : 0.22)
+                    (tint ?? Color.white).opacity(
+                        tint == nil
+                            ? 0.06
+                            : 0.20
+                    )
                 )
             )
-            .overlay(GlassEdge(shape: shape))
+            .overlay(
+                GlassEdge(shape: shape)
+            )
             .shadow(
-                color: Color.black.opacity(0.25),
+                color: Color.black.opacity(0.24),
                 radius: 12,
                 y: 6
             )
     }
 
-    func glassSurface(
-        shape: S,
+    func glassSurface<ShapeType: Shape>(
+        shape: ShapeType,
         style: GlassSurfaceStyle = .regular,
         tint: Color? = nil,
         interactive: Bool = false
     ) -> some View {
+
         modifier(
             GlassSurface(
                 shape: shape,
@@ -363,6 +526,7 @@ extension View {
         tint: Color? = nil,
         interactive: Bool = false
     ) -> some View {
+
         glassSurface(
             shape: RoundedRectangle(
                 cornerRadius: cornerRadius,
@@ -377,8 +541,11 @@ extension View {
         tint: Color? = nil,
         interactive: Bool = false
     ) -> some View {
+
         glassSurface(
-            shape: Capsule(style: .continuous),
+            shape: Capsule(
+                style: .continuous
+            ),
             tint: tint,
             interactive: interactive
         )
@@ -388,6 +555,7 @@ extension View {
         tint: Color? = nil,
         interactive: Bool = false
     ) -> some View {
+
         glassSurface(
             shape: Circle(),
             tint: tint,
@@ -400,6 +568,7 @@ extension View {
         cornerRadius: CGFloat,
         tint: Color?
     ) -> some View {
+
         frostedSurface(
             in: RoundedRectangle(
                 cornerRadius: cornerRadius,
@@ -409,7 +578,7 @@ extension View {
         )
     }
 
-    /// glassEffectID + materialize transition (iOS 26); no-op otherwise.
+    /// Gives a Liquid Glass element a stable identity and transition.
     @ViewBuilder
     func glassMorph(
         id: String,
@@ -418,11 +587,14 @@ extension View {
 
         #if compiler(>=6.2)
 
-        if #available(iOS 26.0, *), let namespace {
+        if #available(iOS 26.0, *),
+           let namespace {
 
-            self
-                .glassEffectID(id, in: namespace)
-                .glassEffectTransition(.materialize)
+            GlassMorphView(
+                content: self,
+                id: id,
+                namespace: namespace
+            )
 
         } else {
 
@@ -436,8 +608,10 @@ extension View {
         #endif
     }
 
-    /// Non-glass input surface for fields that sit inside a glass card (avoids glass-on-glass).
+    /// Non-glass input surface used inside a glass card.
+    /// This avoids unnecessary glass-on-glass stacking.
     func fieldSurface() -> some View {
+
         self
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -445,7 +619,9 @@ extension View {
             .frame(maxWidth: .infinity)
             .background(
                 Capsule(style: .continuous)
-                    .fill(Color.white.opacity(0.10))
+                    .fill(
+                        Color.white.opacity(0.10)
+                    )
             )
             .overlay(
                 Capsule(style: .continuous)
@@ -458,9 +634,53 @@ extension View {
 }
 
 
+// MARK: - Glass Morph View
+
+#if compiler(>=6.2)
+
+@available(iOS 26.0, *)
+private struct GlassMorphView<Content: View>: View {
+
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
+
+    let content: Content
+    let id: String
+    let namespace: Namespace.ID
+
+    var body: some View {
+
+        if reduceMotion {
+
+            content
+                .glassEffectID(
+                    id,
+                    in: namespace
+                )
+                .glassEffectTransition(
+                    .identity
+                )
+
+        } else {
+
+            content
+                .glassEffectID(
+                    id,
+                    in: namespace
+                )
+                .glassEffectTransition(
+                    .materialize
+                )
+        }
+    }
+}
+
+#endif
+
+
 // MARK: - Glass Group
 
-struct GlassGroup: View {
+struct GlassGroup<Content: View>: View {
 
     let spacing: CGFloat
     let content: () -> Content
@@ -479,7 +699,9 @@ struct GlassGroup: View {
 
         if #available(iOS 26.0, *) {
 
-            GlassEffectContainer(spacing: spacing) {
+            GlassEffectContainer(
+                spacing: spacing
+            ) {
                 content()
             }
 
@@ -503,52 +725,92 @@ struct GlassButtonStyle: ButtonStyle {
 
     var tint: Color? = nil
 
-    func makeBody(configuration: Configuration) -> some View {
-        GlassButtonBody(configuration: configuration, tint: tint)
+    func makeBody(
+        configuration: Configuration
+    ) -> some View {
+
+        GlassButtonBody(
+            configuration: configuration,
+            tint: tint
+        )
     }
 }
+
 
 private struct GlassButtonBody: View {
 
     let configuration: ButtonStyleConfiguration
     let tint: Color?
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .body) private var minHeight: CGFloat = 44
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
+
+    @ScaledMetric(relativeTo: .body)
+    private var minHeight: CGFloat = 44
 
     var body: some View {
 
         configuration.label
-            .font(.system(.body, design: .rounded).weight(.semibold))
+            .font(
+                .system(
+                    .body,
+                    design: .rounded
+                )
+                .weight(.semibold)
+            )
             .foregroundStyle(Color.white)
             .multilineTextAlignment(.center)
             .lineLimit(2)
-            .fixedSize(horizontal: false, vertical: true)
+            .fixedSize(
+                horizontal: false,
+                vertical: true
+            )
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
             .frame(minHeight: minHeight)
-            .glassCapsule(tint: tint, interactive: true)
-            .scaleEffect(
-                configuration.isPressed && !reduceMotion ? 0.96 : 1
+            .glassCapsule(
+                tint: tint,
+                interactive: true
             )
-            .animation(Motion.quick, value: configuration.isPressed)
+            .scaleEffect(
+                configuration.isPressed && !reduceMotion
+                    ? 0.96
+                    : 1
+            )
+            .animation(
+                Motion.quick,
+                value: configuration.isPressed
+            )
     }
 }
 
 
 struct PressableStyle: ButtonStyle {
 
-    func makeBody(configuration: Configuration) -> some View {
+    func makeBody(
+        configuration: Configuration
+    ) -> some View {
 
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .opacity(configuration.isPressed ? 0.9 : 1)
-            .animation(Motion.quick, value: configuration.isPressed)
+            .scaleEffect(
+                configuration.isPressed
+                    ? 0.98
+                    : 1
+            )
+            .opacity(
+                configuration.isPressed
+                    ? 0.90
+                    : 1
+            )
+            .animation(
+                Motion.quick,
+                value: configuration.isPressed
+            )
     }
 }
 
 
-// MARK: - Dynamic Background (static, rendered behind each screen)
+// MARK: - App Background
 
 struct AppBackground: View {
 
@@ -580,47 +842,102 @@ struct MidnightBlueWaveBackground: View {
 
         GeometryReader { geo in
 
-            let w = max(geo.size.width, 1)
-            let h = max(geo.size.height, 1)
+            let width = max(
+                geo.size.width,
+                1
+            )
+
+            let height = max(
+                geo.size.height,
+                1
+            )
 
             ZStack {
 
                 Circle()
                     .fill(
-                        Color(red: 0.05, green: 0.35, blue: 0.85).opacity(0.45)
+                        Color(
+                            red: 0.05,
+                            green: 0.35,
+                            blue: 0.85
+                        )
+                        .opacity(0.45)
                     )
-                    .frame(width: w, height: w)
+                    .frame(
+                        width: width,
+                        height: width
+                    )
                     .blur(radius: 75)
-                    .position(x: w * 0.22, y: h * 0.14)
+                    .position(
+                        x: width * 0.22,
+                        y: height * 0.14
+                    )
 
                 Circle()
                     .fill(
-                        Color(red: 0.30, green: 0.15, blue: 0.70).opacity(0.40)
+                        Color(
+                            red: 0.30,
+                            green: 0.15,
+                            blue: 0.70
+                        )
+                        .opacity(0.40)
                     )
-                    .frame(width: w * 1.05, height: w * 1.05)
+                    .frame(
+                        width: width * 1.05,
+                        height: width * 1.05
+                    )
                     .blur(radius: 85)
-                    .position(x: w * 0.82, y: h * 0.86)
+                    .position(
+                        x: width * 0.82,
+                        y: height * 0.86
+                    )
 
                 Circle()
                     .fill(
-                        Color(red: 0.10, green: 0.45, blue: 0.95).opacity(0.22)
+                        Color(
+                            red: 0.10,
+                            green: 0.45,
+                            blue: 0.95
+                        )
+                        .opacity(0.22)
                     )
-                    .frame(width: w * 0.7, height: w * 0.7)
+                    .frame(
+                        width: width * 0.70,
+                        height: width * 0.70
+                    )
                     .blur(radius: 70)
-                    .position(x: w * 0.85, y: h * 0.48)
+                    .position(
+                        x: width * 0.85,
+                        y: height * 0.48
+                    )
 
                 LinearGradient(
                     colors: [
-                        Color(red: 0.0, green: 0.4, blue: 0.9).opacity(0.25),
+                        Color(
+                            red: 0.0,
+                            green: 0.4,
+                            blue: 0.9
+                        )
+                        .opacity(0.25),
+
                         Color.clear,
-                        Color(red: 0.4, green: 0.2, blue: 0.8).opacity(0.25)
+
+                        Color(
+                            red: 0.4,
+                            green: 0.2,
+                            blue: 0.8
+                        )
+                        .opacity(0.25)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .blur(radius: 50)
             }
-            .frame(width: w, height: h)
+            .frame(
+                width: width,
+                height: height
+            )
         }
         .clipped()
     }
@@ -637,25 +954,59 @@ struct ObsidianTealTubeBackground: View {
 
             Ellipse()
                 .fill(
-                    Color(red: 0.0, green: 0.65, blue: 0.55).opacity(0.35)
+                    Color(
+                        red: 0.0,
+                        green: 0.65,
+                        blue: 0.55
+                    )
+                    .opacity(0.35)
                 )
-                .frame(width: 360, height: 480)
+                .frame(
+                    width: 360,
+                    height: 480
+                )
                 .blur(radius: 80)
-                .offset(x: 30, y: -145)
+                .offset(
+                    x: 30,
+                    y: -145
+                )
 
             Ellipse()
                 .fill(
-                    Color(red: 0.0, green: 0.45, blue: 0.70).opacity(0.3)
+                    Color(
+                        red: 0.0,
+                        green: 0.45,
+                        blue: 0.70
+                    )
+                    .opacity(0.30)
                 )
-                .frame(width: 400, height: 430)
+                .frame(
+                    width: 400,
+                    height: 430
+                )
                 .blur(radius: 90)
-                .offset(x: -30, y: 190)
+                .offset(
+                    x: -30,
+                    y: 190
+                )
 
             LinearGradient(
                 colors: [
-                    Color(red: 0.0, green: 0.8, blue: 0.7).opacity(0.15),
+                    Color(
+                        red: 0.0,
+                        green: 0.8,
+                        blue: 0.7
+                    )
+                    .opacity(0.15),
+
                     Color.clear,
-                    Color(red: 0.0, green: 0.5, blue: 0.6).opacity(0.15)
+
+                    Color(
+                        red: 0.0,
+                        green: 0.5,
+                        blue: 0.6
+                    )
+                    .opacity(0.15)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -671,6 +1022,7 @@ struct ObsidianTealTubeBackground: View {
 struct StatusDot: View {
 
     let on: Bool
+
     var size: CGFloat = 10
 
     var body: some View {
@@ -680,56 +1032,99 @@ struct StatusDot: View {
             if on {
 
                 Circle()
-                    .fill(Theme.mint.opacity(0.25))
-                    .frame(width: size * 2, height: size * 2)
+                    .fill(
+                        Theme.mint.opacity(0.25)
+                    )
+                    .frame(
+                        width: size * 2,
+                        height: size * 2
+                    )
             }
 
             Circle()
-                .fill(on ? Theme.mint : Color.white.opacity(0.3))
-                .frame(width: size, height: size)
+                .fill(
+                    on
+                        ? Theme.mint
+                        : Color.white.opacity(0.30)
+                )
+                .frame(
+                    width: size,
+                    height: size
+                )
                 .shadow(
-                    color: on ? Theme.mint.opacity(0.6) : Color.clear,
+                    color: on
+                        ? Theme.mint.opacity(0.60)
+                        : Color.clear,
                     radius: 4
                 )
         }
-        .frame(width: size * 2.5, height: size * 2.5)
-        .motion(Motion.quick, value: on)
+        .frame(
+            width: size * 2.5,
+            height: size * 2.5
+        )
+        .motion(
+            Motion.quick,
+            value: on
+        )
         .accessibilityHidden(true)
     }
 }
 
 
-// MARK: - Radar (static; no looping animation)
+// MARK: - Radar
 
 struct RadarView: View {
 
-    @ScaledMetric(relativeTo: .title) private var side: CGFloat = 120
+    @ScaledMetric(relativeTo: .title)
+    private var side: CGFloat = 120
 
     var body: some View {
 
         ZStack {
 
-            ForEach(0..<3, id: \.self) { i in
+            ForEach(
+                0..<3,
+                id: \.self
+            ) { index in
 
                 Circle()
                     .stroke(
                         LinearGradient(
-                            colors: [Theme.accent, Theme.secondaryAccent],
+                            colors: [
+                                Theme.accent,
+                                Theme.secondaryAccent
+                            ],
                             startPoint: .top,
                             endPoint: .bottom
                         ),
                         lineWidth: 1.5
                     )
-                    .scaleEffect(0.45 + CGFloat(i) * 0.28)
-                    .opacity(0.75 - Double(i) * 0.2)
+                    .scaleEffect(
+                        0.45
+                        + CGFloat(index) * 0.28
+                    )
+                    .opacity(
+                        0.75
+                        - Double(index) * 0.20
+                    )
             }
 
-            Image(systemName: "dot.radiowaves.left.and.right")
-                .symbolRenderingMode(.hierarchical)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(Theme.title)
+            Image(
+                systemName:
+                    "dot.radiowaves.left.and.right"
+            )
+            .symbolRenderingMode(.hierarchical)
+            .font(
+                .title2.weight(.semibold)
+            )
+            .foregroundStyle(
+                Theme.title
+            )
         }
-        .frame(width: side, height: side)
+        .frame(
+            width: side,
+            height: side
+        )
         .accessibilityHidden(true)
     }
 }
@@ -742,7 +1137,8 @@ struct Avatar: View {
     let name: String
     let online: Bool
 
-    @ScaledMetric(relativeTo: .headline) private var size: CGFloat = 44
+    @ScaledMetric(relativeTo: .headline)
+    private var size: CGFloat = 44
 
     var body: some View {
 
@@ -751,27 +1147,54 @@ struct Avatar: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [Theme.accent, Theme.secondaryAccent],
+                        colors: [
+                            Theme.accent,
+                            Theme.secondaryAccent
+                        ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
 
-            Text(String(name.prefix(1)).uppercased())
-                .font(.system(.headline, design: .rounded).weight(.bold))
-                .foregroundStyle(Color.white)
+            Text(
+                String(
+                    name.prefix(1)
+                )
+                .uppercased()
+            )
+            .font(
+                .system(
+                    .headline,
+                    design: .rounded
+                )
+                .weight(.bold)
+            )
+            .foregroundStyle(Color.white)
         }
-        .frame(width: size, height: size)
-        .overlay(alignment: .bottomTrailing) {
+        .frame(
+            width: size,
+            height: size
+        )
+        .overlay(
+            alignment: .bottomTrailing
+        ) {
 
             Circle()
-                .fill(online ? Theme.mint : Color.gray)
-                .frame(width: size * 0.28, height: size * 0.28)
+                .fill(
+                    online
+                        ? Theme.mint
+                        : Color.gray
+                )
+                .frame(
+                    width: size * 0.28,
+                    height: size * 0.28
+                )
                 .overlay(
-                    Circle().stroke(
-                        Color.black.opacity(0.6),
-                        lineWidth: 2
-                    )
+                    Circle()
+                        .stroke(
+                            Color.black.opacity(0.60),
+                            lineWidth: 2
+                        )
                 )
         }
         .accessibilityHidden(true)
@@ -793,12 +1216,25 @@ struct SectionTitle: View {
 
         HStack(spacing: 8) {
 
-            Text(text.uppercased())
-                .font(.system(.caption, design: .rounded).weight(.bold))
-                .tracking(1.2)
-                .foregroundStyle(Color.white.opacity(0.75))
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
+            Text(
+                text.uppercased()
+            )
+            .font(
+                .system(
+                    .caption,
+                    design: .rounded
+                )
+                .weight(.bold)
+            )
+            .tracking(1.2)
+            .foregroundStyle(
+                Color.white.opacity(0.75)
+            )
+            .fixedSize(
+                horizontal: false,
+                vertical: true
+            )
+            .accessibilityAddTraits(.isHeader)
 
             Spacer(minLength: 0)
         }
@@ -818,7 +1254,8 @@ struct RowCard: View {
 
     var tint: Color = Theme.accent
 
-    @ScaledMetric(relativeTo: .headline) private var iconSize: CGFloat = 44
+    @ScaledMetric(relativeTo: .headline)
+    private var iconSize: CGFloat = 44
 
     var body: some View {
 
@@ -828,42 +1265,72 @@ struct RowCard: View {
                 .symbolRenderingMode(.hierarchical)
                 .font(.body.weight(.semibold))
                 .foregroundStyle(Color.white)
-                .frame(width: iconSize, height: iconSize)
+                .frame(
+                    width: iconSize,
+                    height: iconSize
+                )
                 .background(
-                    Circle().fill(tint.opacity(0.35))
+                    Circle()
+                        .fill(
+                            tint.opacity(0.35)
+                        )
                 )
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(
+                alignment: .leading,
+                spacing: 4
+            ) {
 
                 Text(title)
-                    .font(.system(.headline, design: .rounded).weight(.semibold))
+                    .font(
+                        .system(
+                            .headline,
+                            design: .rounded
+                        )
+                        .weight(.semibold)
+                    )
                     .foregroundStyle(Color.white)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
 
                 Text(subtitle)
                     .font(.subheadline)
-                    .foregroundStyle(Color.white.opacity(0.75))
+                    .foregroundStyle(
+                        Color.white.opacity(0.75)
+                    )
                     .multilineTextAlignment(.leading)
                     .lineLimit(3)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
             .layoutPriority(1)
 
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.bold))
-                .foregroundStyle(Color.white.opacity(0.5))
+                .foregroundStyle(
+                    Color.white.opacity(0.5)
+                )
                 .accessibilityHidden(true)
         }
         .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
         .glassCard(
             cornerRadius: 22,
             tint: tint.opacity(0.12)
         )
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(
+            children: .combine
+        )
     }
 }
 
@@ -878,35 +1345,60 @@ struct PeerRow: View {
 
         HStack(spacing: 12) {
 
-            Avatar(name: p.nick, online: p.online)
+            Avatar(
+                name: p.nick,
+                online: p.online
+            )
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(
+                alignment: .leading,
+                spacing: 4
+            ) {
 
                 HStack(spacing: 6) {
 
                     Text(p.nick)
-                        .font(.system(.headline, design: .rounded).weight(.semibold))
+                        .font(
+                            .system(
+                                .headline,
+                                design: .rounded
+                            )
+                            .weight(.semibold)
+                        )
                         .foregroundStyle(Color.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
 
                     if p.verified {
 
-                        Image(systemName: "checkmark.seal.fill")
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(Theme.accent)
-                            .font(.subheadline)
-                            .accessibilityLabel("Verified")
-                            .motionTransition(
-                                .opacity.combined(with: .scale(scale: 0.9))
+                        Image(
+                            systemName:
+                                "checkmark.seal.fill"
+                        )
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(
+                            Theme.accent
+                        )
+                        .font(.subheadline)
+                        .accessibilityLabel("Verified")
+                        .motionTransition(
+                            .opacity.combined(
+                                with: .scale(
+                                    scale: 0.9
+                                )
                             )
+                        )
                     }
                 }
 
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                HStack(
+                    alignment: .firstTextBaseline,
+                    spacing: 4
+                ) {
 
                     Image(
-                        systemName: p.online
+                        systemName:
+                            p.online
                             ? "antenna.radiowaves.left.and.right"
                             : "moon.zzz.fill"
                     )
@@ -919,24 +1411,44 @@ struct PeerRow: View {
                         : "offline · messages will queue"
                     )
                     .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                 }
                 .font(.subheadline)
-                .foregroundStyle(Color.white.opacity(0.75))
+                .foregroundStyle(
+                    Color.white.opacity(0.75)
+                )
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
             .layoutPriority(1)
 
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.bold))
-                .foregroundStyle(Color.white.opacity(0.5))
+                .foregroundStyle(
+                    Color.white.opacity(0.5)
+                )
                 .accessibilityHidden(true)
         }
         .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22)
-        .motion(Motion.quick, value: p.verified)
-        .accessibilityElement(children: .combine)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
+        .glassCard(
+            cornerRadius: 22
+        )
+        .motion(
+            Motion.quick,
+            value: p.verified
+        )
+        .accessibilityElement(
+            children: .combine
+        )
     }
 }
 
@@ -955,37 +1467,106 @@ struct BannerCard: View {
 
     var body: some View {
 
-        HStack(spacing: 12) {
+        ViewThatFits(
+            in: .horizontal
+        ) {
 
-            Image(systemName: icon)
-                .symbolRenderingMode(.hierarchical)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(tint)
-                .accessibilityHidden(true)
+            HStack(spacing: 12) {
 
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(Color.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineLimit(5)
-                .layoutPriority(1)
+                bannerIcon
 
-            if let actionTitle,
-               let action {
+                bannerText
 
-                Button(actionTitle, action: action)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.accent)
-                    .frame(minHeight: 44)
-                    .buttonStyle(PressableStyle())
+                if let actionTitle,
+                   let action {
+
+                    bannerAction(
+                        title: actionTitle,
+                        action: action
+                    )
+                }
+            }
+
+            VStack(
+                alignment: .leading,
+                spacing: 12
+            ) {
+
+                HStack(
+                    alignment: .top,
+                    spacing: 12
+                ) {
+
+                    bannerIcon
+
+                    bannerText
+                }
+
+                if let actionTitle,
+                   let action {
+
+                    bannerAction(
+                        title: actionTitle,
+                        action: action
+                    )
+                }
             }
         }
         .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
         .glassCard(
             cornerRadius: 20,
-            tint: tint.opacity(0.28)
+            tint: tint.opacity(0.20)
+        )
+    }
+
+    private var bannerIcon: some View {
+
+        Image(systemName: icon)
+            .symbolRenderingMode(.hierarchical)
+            .font(.body.weight(.semibold))
+            .foregroundStyle(tint)
+            .accessibilityHidden(true)
+    }
+
+    private var bannerText: some View {
+
+        Text(text)
+            .font(.subheadline)
+            .foregroundStyle(Color.white)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
+            .fixedSize(
+                horizontal: false,
+                vertical: true
+            )
+            .lineLimit(5)
+            .layoutPriority(1)
+    }
+
+    private func bannerAction(
+        title: String,
+        action: @escaping () -> Void
+    ) -> some View {
+
+        Button(
+            title,
+            action: action
+        )
+        .font(
+            .subheadline.weight(.semibold)
+        )
+        .foregroundStyle(
+            Theme.accent
+        )
+        .frame(minHeight: 44)
+        .buttonStyle(
+            PressableStyle()
         )
     }
 }
@@ -1004,12 +1585,20 @@ struct TransportChip: View {
         HStack(spacing: 6) {
 
             StatusDot(
-                on: info.state.active && info.state.links > 0,
+                on:
+                    info.state.active
+                    && info.state.links > 0,
                 size: 6
             )
 
             Text(info.label)
-                .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                .font(
+                    .system(
+                        .subheadline,
+                        design: .rounded
+                    )
+                    .weight(.semibold)
+                )
                 .foregroundStyle(Color.white)
                 .lineLimit(1)
 
@@ -1019,13 +1608,20 @@ struct TransportChip: View {
                 : "off"
             )
             .font(.caption)
-            .foregroundStyle(Color.white.opacity(0.8))
+            .foregroundStyle(
+                Color.white.opacity(0.8)
+            )
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .glassCapsule()
-        .glassMorph(id: info.label, in: ns)
-        .accessibilityElement(children: .combine)
+        .glassMorph(
+            id: "transport-\(info.label)",
+            in: ns
+        )
+        .accessibilityElement(
+            children: .combine
+        )
     }
 }
 
@@ -1036,8 +1632,12 @@ struct RootView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
+
     @AppStorage("selectedTheme")
-    private var selectedTheme: AppThemeStyle = .midnightBlue
+    private var selectedTheme:
+        AppThemeStyle = .midnightBlue
 
     var body: some View {
 
@@ -1046,7 +1646,9 @@ struct RootView: View {
             if engine.nickname.isEmpty {
 
                 NicknameView()
-                    .transition(.opacity)
+                    .motionTransition(
+                        .opacity
+                    )
 
             } else {
 
@@ -1054,14 +1656,23 @@ struct RootView: View {
 
                     PeersView()
                 }
-                .transition(.opacity)
+                .motionTransition(
+                    .opacity
+                )
             }
         }
         .animation(
-            .easeInOut(duration: 0.35),
+            reduceMotion
+                ? .easeInOut(duration: 0.15)
+                : .easeInOut(duration: 0.30),
             value: engine.nickname.isEmpty
         )
-        .animation(Motion.theme, value: selectedTheme)
+        .animation(
+            reduceMotion
+                ? .easeInOut(duration: 0.15)
+                : Motion.theme,
+            value: selectedTheme
+        )
         .preferredColorScheme(.dark)
         .tint(Theme.accent)
         .id(selectedTheme)
@@ -1075,19 +1686,26 @@ struct NicknameView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .largeTitle) private var titleSize: CGFloat = 34
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
+
+    @ScaledMetric(relativeTo: .largeTitle)
+    private var titleSize: CGFloat = 34
 
     @State private var nick = ""
     @State private var appeared = false
 
     private var isEmpty: Bool {
+
         nick
-            .trimmingCharacters(in: .whitespaces)
+            .trimmingCharacters(
+                in: .whitespaces
+            )
             .isEmpty
     }
 
     private var shown: Bool {
+
         appeared || reduceMotion
     }
 
@@ -1100,7 +1718,11 @@ struct NicknameView: View {
                 Spacer(minLength: 24)
 
                 RadarView()
-                    .opacity(shown ? 1 : 0)
+                    .opacity(
+                        shown
+                            ? 1
+                            : 0
+                    )
 
                 VStack(spacing: 12) {
 
@@ -1112,56 +1734,108 @@ struct NicknameView: View {
                                 design: .rounded
                             )
                         )
-                        .foregroundStyle(Theme.title)
+                        .foregroundStyle(
+                            Theme.title
+                        )
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
-                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityAddTraits(
+                            .isHeader
+                        )
 
                     Text(
                         "Secure decentralized mesh communication. Operates entirely off-grid via Bluetooth and local Wi-Fi."
                     )
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.white.opacity(0.85))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(
+                        Color.white.opacity(0.85)
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                     .padding(.horizontal, 8)
                 }
-                .offset(y: shown ? 0 : 12)
-                .opacity(shown ? 1 : 0)
+                .offset(
+                    y: shown ? 0 : 12
+                )
+                .opacity(
+                    shown ? 1 : 0
+                )
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 12
+                ) {
 
                     Label(
                         "Choose Nickname",
-                        systemImage: "person.crop.circle.badge.plus"
+                        systemImage:
+                            "person.crop.circle.badge.plus"
                     )
-                    .symbolRenderingMode(.hierarchical)
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(Color.white)
+                    .symbolRenderingMode(
+                        .hierarchical
+                    )
+                    .font(
+                        .system(
+                            .headline,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(
+                        Color.white
+                    )
 
                     TextField(
                         "",
                         text: $nick,
-                        prompt: Text("Enter display name")
-                            .foregroundColor(Color.white.opacity(0.55))
+                        prompt:
+                            Text("Enter display name")
+                            .foregroundColor(
+                                Color.white.opacity(0.55)
+                            )
                     )
-                    .font(.system(.body, design: .rounded))
-                    .foregroundStyle(Color.white)
+                    .font(
+                        .system(
+                            .body,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(
+                        Color.white
+                    )
                     .fieldSurface()
-                    .accessibilityLabel("Display name")
+                    .accessibilityLabel(
+                        "Display name"
+                    )
 
                     Text(
                         "No account required. Your cryptographic keypair verifies your identity across the mesh."
                     )
                     .font(.subheadline)
-                    .foregroundStyle(Color.white.opacity(0.7))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(
+                        Color.white.opacity(0.70)
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                 }
                 .padding(20)
-                .frame(maxWidth: 520, alignment: .leading)
-                .glassCard(cornerRadius: 28)
-                .offset(y: shown ? 0 : 16)
-                .opacity(shown ? 1 : 0)
+                .frame(
+                    maxWidth: 520,
+                    alignment: .leading
+                )
+                .glassCard(
+                    cornerRadius: 28
+                )
+                .offset(
+                    y: shown ? 0 : 16
+                )
+                .opacity(
+                    shown ? 1 : 0
+                )
 
                 Button {
 
@@ -1175,31 +1849,67 @@ struct NicknameView: View {
 
                         Text("Initialize Node")
 
-                        Image(systemName: "arrow.right")
+                        Image(
+                            systemName:
+                                "arrow.right"
+                        )
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(
+                        maxWidth: .infinity
+                    )
                 }
                 .buttonStyle(
-                    GlassButtonStyle(tint: Theme.accent.opacity(0.8))
+                    GlassButtonStyle(
+                        tint:
+                            Theme.accent.opacity(0.80)
+                    )
                 )
-                .frame(maxWidth: 520)
+                .frame(
+                    maxWidth: 520
+                )
                 .disabled(isEmpty)
-                .opacity(isEmpty ? 0.5 : 1)
-                .motion(Motion.quick, value: isEmpty)
-                .opacity(shown ? 1 : 0)
+                .opacity(
+                    isEmpty
+                        ? 0.5
+                        : 1
+                )
+                .motion(
+                    Motion.quick,
+                    value: isEmpty
+                )
+                .opacity(
+                    shown
+                        ? 1
+                        : 0
+                )
 
                 Spacer(minLength: 24)
             }
-            .frame(maxWidth: .infinity)
+            .frame(
+                maxWidth: .infinity
+            )
             .padding(.horizontal, 20)
             .padding(.vertical, 20)
         }
         .scrollIndicators(.hidden)
-        .background { AppBackground() }
+        .background {
+            AppBackground()
+        }
         .onAppear {
 
-            withAnimation(.easeInOut(duration: 0.35)) {
+            if reduceMotion {
+
                 appeared = true
+
+            } else {
+
+                withAnimation(
+                    .easeInOut(
+                        duration: 0.30
+                    )
+                ) {
+                    appeared = true
+                }
             }
         }
     }
@@ -1209,15 +1919,21 @@ struct NicknameView: View {
 // MARK: - Animation View Wrapper
 
 struct AnimationView: View {
-  var body: some View {
-    DotLottieAnimation(
-      webURL: "https://lottie.host/bc6e7107-956e-4207-84f3-d5f3da7884b6/KnpyDwX8Du.lottie",
-      config: AnimationConfig(
-        autoplay: true,
-        loop: true
-      )
-    ).view()
-  }
+
+    var body: some View {
+
+        DotLottieAnimation(
+            webURL:
+                "https://lottie.host/bc6e7107-956e-4207-84f3-d5f3da7884b6/KnpyDwX8Du.lottie",
+            config:
+                AnimationConfig(
+                    autoplay: true,
+                    loop: false
+                )
+        )
+        .view()
+        .accessibilityHidden(true)
+    }
 }
 
 
@@ -1230,8 +1946,11 @@ struct PeersView: View {
     @Namespace private var glassNS
 
     private var peerKey: [String] {
+
         engine.peers.map {
-            $0.id + ($0.online ? "1" : "0")
+
+            $0.id
+            + ($0.online ? "1" : "0")
         }
     }
 
@@ -1243,14 +1962,25 @@ struct PeersView: View {
 
                 // MARK: Transport Status
 
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(
+                    .horizontal,
+                    showsIndicators: false
+                ) {
 
-                    GlassGroup(spacing: 8) {
+                    GlassGroup(
+                        spacing: 8
+                    ) {
 
                         HStack(spacing: 8) {
 
-                            ForEach(engine.transportInfos) {
-                                TransportChip(info: $0, ns: glassNS)
+                            ForEach(
+                                engine.transportInfos
+                            ) {
+
+                                TransportChip(
+                                    info: $0,
+                                    ns: glassNS
+                                )
                             }
                         }
                         .padding(.horizontal, 2)
@@ -1264,14 +1994,20 @@ struct PeersView: View {
                     engine.transportInfos.filter {
                         $0.state.error != nil
                     }
-                ) { t in
+                ) { transport in
 
                     BannerCard(
-                        icon: "exclamationmark.triangle.fill",
-                        text: "\(t.label): \(t.state.error ?? "")"
+                        icon:
+                            "exclamationmark.triangle.fill",
+                        text:
+                            "\(transport.label): \(transport.state.error ?? "")"
                     )
                     .motionTransition(
-                        .move(edge: .top).combined(with: .opacity)
+                        .opacity.combined(
+                            with: .move(
+                                edge: .top
+                            )
+                        )
                     )
                 }
 
@@ -1280,38 +2016,49 @@ struct PeersView: View {
                 VStack(spacing: 12) {
 
                     NavigationLink(
-                        destination: ChatView(
-                            convId: ROOM_ID,
-                            title: "Group Room"
-                        )
+                        destination:
+                            ChatView(
+                                convId: ROOM_ID,
+                                title: "Group Room"
+                            )
                     ) {
 
                         RowCard(
                             icon: "person.3.fill",
                             title: "Group Room",
-                            subtitle: "Broadcast to all reachable mesh nodes (signed)"
+                            subtitle:
+                                "Broadcast to all reachable mesh nodes (signed)"
                         )
                     }
-                    .buttonStyle(PressableStyle())
+                    .buttonStyle(
+                        PressableStyle()
+                    )
 
                     NavigationLink(
-                        destination: ChatView(
-                            convId: EMERGENCY_ID,
-                            title: "Emergency SOS"
-                        )
+                        destination:
+                            ChatView(
+                                convId: EMERGENCY_ID,
+                                title: "Emergency SOS"
+                            )
                     ) {
 
                         RowCard(
-                            icon: "exclamationmark.octagon.fill",
+                            icon:
+                                "exclamationmark.octagon.fill",
                             title: "Emergency SOS",
-                            subtitle: "High-priority alert to all nearby nodes",
+                            subtitle:
+                                "High-priority alert to all nearby nodes",
                             tint: Theme.danger
                         )
                     }
-                    .buttonStyle(PressableStyle())
+                    .buttonStyle(
+                        PressableStyle()
+                    )
                 }
 
-                SectionTitle("Discovered Nodes")
+                SectionTitle(
+                    "Discovered Nodes"
+                )
 
                 // MARK: Empty State
 
@@ -1321,75 +2068,153 @@ struct PeersView: View {
 
                         RadarView()
 
-                        Text("Scanning Mesh Network…")
-                            .font(.system(.headline, design: .rounded))
-                            .foregroundStyle(Color.white)
-                            .multilineTextAlignment(.center)
+                        Text(
+                            "Scanning Mesh Network…"
+                        )
+                        .font(
+                            .system(
+                                .headline,
+                                design: .rounded
+                            )
+                        )
+                        .foregroundStyle(
+                            Color.white
+                        )
+                        .multilineTextAlignment(
+                            .center
+                        )
 
                         Text(
                             "No peers detected yet. Ensure Bluetooth is enabled and devices are within close proximity."
                         )
                         .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(Color.white.opacity(0.75))
-                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(
+                            .center
+                        )
+                        .foregroundStyle(
+                            Color.white.opacity(0.75)
+                        )
+                        .fixedSize(
+                            horizontal: false,
+                            vertical: true
+                        )
                         .padding(.horizontal, 8)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 24)
-                    .frame(maxWidth: .infinity)
-                    .glassCard(cornerRadius: 26)
-                    .motionTransition(.opacity)
+                    .frame(
+                        maxWidth: .infinity
+                    )
+                    .glassCard(
+                        cornerRadius: 26
+                    )
+                    .motionTransition(
+                        .opacity
+                    )
                 }
 
                 // MARK: Peers
 
-                ForEach(engine.peers) { p in
+                ForEach(
+                    engine.peers
+                ) { peer in
 
                     NavigationLink(
-                        destination: ChatView(
-                            convId: p.id,
-                            title: p.nick
-                        )
+                        destination:
+                            ChatView(
+                                convId: peer.id,
+                                title: peer.nick
+                            )
                     ) {
 
-                        PeerRow(p: p)
+                        PeerRow(
+                            p: peer
+                        )
                     }
-                    .buttonStyle(PressableStyle())
+                    .buttonStyle(
+                        PressableStyle()
+                    )
                     .motionTransition(
-                        .move(edge: .trailing).combined(with: .opacity)
+                        .opacity.combined(
+                            with: .move(
+                                edge: .trailing
+                            )
+                        )
                     )
                 }
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 32)
-            .frame(maxWidth: 620)
-            .frame(maxWidth: .infinity)
-            .motion(Motion.standard, value: peerKey)
+            .frame(
+                maxWidth: 620
+            )
+            .frame(
+                maxWidth: .infinity
+            )
+            .motion(
+                Motion.standard,
+                value: peerKey
+            )
         }
         .scrollIndicators(.hidden)
-        .background { AppBackground() }
+        .background {
+            AppBackground()
+        }
         .toolbar {
-            // Left Custom Navigation Header (Logo + MENSAGIP + OffGrid Chat)
-            ToolbarItem(placement: .navigationBarLeading) {
+
+            // MARK: Custom Navigation Header
+
+            ToolbarItem(
+                placement:
+                    .navigationBarLeading
+            ) {
+
                 HStack(spacing: 8) {
+
                     AnimationView()
-                        .frame(width: 38, height: 38)
-                    
-                    VStack(alignment: .leading, spacing: 1) {
+                        .frame(
+                            width: 38,
+                            height: 38
+                        )
+
+                    VStack(
+                        alignment: .leading,
+                        spacing: 1
+                    ) {
+
                         Text("MENSAGIP")
-                            .font(.system(.subheadline, design: .rounded).weight(.bold))
-                            .foregroundColor(.white)
+                            .font(
+                                .system(
+                                    .subheadline,
+                                    design: .rounded
+                                )
+                                .weight(.bold)
+                            )
+                            .foregroundStyle(
+                                Color.white
+                            )
+
                         Text("OffGrid Chat")
-                            .font(.system(.caption2, design: .rounded))
-                            .foregroundColor(.gray)
+                            .font(
+                                .system(
+                                    .caption2,
+                                    design: .rounded
+                                )
+                            )
+                            .foregroundStyle(
+                                Color.white.opacity(0.55)
+                            )
                     }
                 }
             }
 
-            // Right Toolbar Actions
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            // MARK: Toolbar Actions
+
+            ToolbarItemGroup(
+                placement:
+                    .navigationBarTrailing
+            ) {
 
                 NavigationLink {
 
@@ -1397,10 +2222,17 @@ struct PeersView: View {
 
                 } label: {
 
-                    Image(systemName: "qrcode.viewfinder")
+                    Image(
+                        systemName:
+                            "qrcode.viewfinder"
+                    )
                 }
-                .accessibilityLabel("Identity")
-                .accessibilityHint("Shows your fingerprint and QR code")
+                .accessibilityLabel(
+                    "Identity"
+                )
+                .accessibilityHint(
+                    "Shows your fingerprint and QR code"
+                )
 
                 NavigationLink {
 
@@ -1408,12 +2240,20 @@ struct PeersView: View {
 
                 } label: {
 
-                    Image(systemName: "waveform.badge.magnifyingglass")
+                    Image(
+                        systemName:
+                            "waveform.badge.magnifyingglass"
+                    )
                 }
-                .accessibilityLabel("Radios & Settings")
+                .accessibilityLabel(
+                    "Radios and Settings"
+                )
             }
         }
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarColorScheme(
+            .dark,
+            for: .navigationBar
+        )
     }
 }
 
@@ -1427,82 +2267,122 @@ struct ChatView: View {
     let convId: String
     let title: String
 
-    @State private var text = ""
-    @State private var bounce = false
-    @State private var glow = false
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
 
-    @ScaledMetric(relativeTo: .body) private var controlSize: CGFloat = 44
+    @State private var text = ""
+
+    @ScaledMetric(relativeTo: .body)
+    private var controlSize: CGFloat = 44
 
     private var msgs: [ChatMessage] {
 
         engine.messages
-            .filter { $0.convId == convId }
-            .sorted { $0.ts < $1.ts }
+            .filter {
+                $0.convId == convId
+            }
+            .sorted {
+                $0.ts < $1.ts
+            }
     }
 
     private var isGroup: Bool {
-        convId == ROOM_ID || convId == EMERGENCY_ID
+
+        convId == ROOM_ID
+            || convId == EMERGENCY_ID
     }
 
     private var isSOS: Bool {
+
         convId == EMERGENCY_ID
     }
 
     private var peer: PeerView? {
-        engine.peers.first { $0.id == convId }
+
+        engine.peers.first {
+            $0.id == convId
+        }
     }
 
     private var isEmpty: Bool {
+
         text
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingCharacters(
+                in:
+                    .whitespacesAndNewlines
+            )
             .isEmpty
     }
 
-    private func isContinuation(_ m: ChatMessage) -> Bool {
+    private func isContinuation(
+        _ message: ChatMessage
+    ) -> Bool {
 
         let list = msgs
 
-        guard let i = list.firstIndex(where: { $0.id == m.id }),
-              i > 0 else {
+        guard
+            let index =
+                list.firstIndex(
+                    where: {
+                        $0.id == message.id
+                    }
+                ),
+            index > 0
+        else {
             return false
         }
 
-        return list[i - 1].senderId == m.senderId
-            && list[i - 1].outgoing == m.outgoing
+        return
+            list[index - 1].senderId
+                == message.senderId
+            &&
+            list[index - 1].outgoing
+                == message.outgoing
     }
 
     @ViewBuilder
-    private func statusBadge(_ s: MsgStatus) -> some View {
+    private func statusBadge(
+        _ status: MsgStatus
+    ) -> some View {
 
         HStack(spacing: 4) {
 
-            switch s {
+            switch status {
 
             case .queued:
 
-                Image(systemName: "clock.fill")
-                    .font(.caption2)
+                Image(
+                    systemName: "clock.fill"
+                )
+                .font(.caption2)
 
                 Text("Queued")
 
             case .sent:
 
-                Image(systemName: "checkmark")
-                    .font(.caption2)
+                Image(
+                    systemName: "checkmark"
+                )
+                .font(.caption2)
 
                 Text("Sent")
 
             case .delivered:
 
-                Image(systemName: "checkmark.2")
-                    .font(.caption2)
+                Image(
+                    systemName: "checkmark.2"
+                )
+                .font(.caption2)
 
                 Text("Delivered")
 
             case .failed:
 
-                Image(systemName: "exclamationmark.circle.fill")
-                    .font(.caption2)
+                Image(
+                    systemName:
+                        "exclamationmark.circle.fill"
+                )
+                .font(.caption2)
 
                 Text("Failed · Tap to retry")
 
@@ -1511,11 +2391,13 @@ struct ChatView: View {
                 EmptyView()
             }
         }
-        .font(.caption2.weight(.medium))
+        .font(
+            .caption2.weight(.medium)
+        )
         .foregroundStyle(
-            s == .failed
-            ? Theme.danger
-            : Color.white.opacity(0.7)
+            status == .failed
+                ? Theme.danger
+                : Color.white.opacity(0.70)
         )
     }
 
@@ -1525,35 +2407,48 @@ struct ChatView: View {
 
             VStack(spacing: 8) {
 
-                if let p = peer,
-                   !p.verified {
+                if let peer,
+                   !peer.verified {
 
                     BannerCard(
-                        icon: "shield.lefthalf.filled",
-                        text: "Unverified peer. Compare cryptographic fingerprint on their Identity screen.",
+                        icon:
+                            "shield.lefthalf.filled",
+                        text:
+                            "Unverified peer. Compare cryptographic fingerprint on their Identity screen.",
                         actionTitle: "Verify"
                     ) {
 
                         Haptics.success()
 
-                        engine.setVerified(p.id)
+                        engine.setVerified(
+                            peer.id
+                        )
                     }
                     .motionTransition(
-                        .move(edge: .top).combined(with: .opacity)
+                        .opacity.combined(
+                            with: .move(
+                                edge: .top
+                            )
+                        )
                     )
                 }
 
                 if isSOS {
 
                     BannerCard(
-                        icon: "exclamationmark.octagon.fill",
-                        text: "Emergency Broadcast active. Messages are signed and broadcast globally across the mesh."
+                        icon:
+                            "exclamationmark.octagon.fill",
+                        text:
+                            "Emergency Broadcast active. Messages are signed and broadcast globally across the mesh."
                     )
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
-            .motion(Motion.standard, value: peer?.verified)
+            .motion(
+                Motion.standard,
+                value: peer?.verified
+            )
 
             ScrollViewReader { proxy in
 
@@ -1561,33 +2456,56 @@ struct ChatView: View {
 
                     LazyVStack(spacing: 0) {
 
-                        ForEach(msgs) { m in
+                        ForEach(msgs) { message in
 
-                            bubble(m)
+                            bubble(message)
                         }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .motion(Motion.standard, value: msgs.count)
+                    .motion(
+                        Motion.standard,
+                        value: msgs.count
+                    )
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .onChange(of: msgs.count) { _ in
+                .scrollDismissesKeyboard(
+                    .interactively
+                )
+                .onChange(
+                    of: msgs.count
+                ) { _ in
 
-                    scrollToEnd(proxy, animated: true)
+                    scrollToEnd(
+                        proxy,
+                        animated: !reduceMotion
+                    )
                 }
                 .onAppear {
 
-                    scrollToEnd(proxy, animated: false)
+                    scrollToEnd(
+                        proxy,
+                        animated: false
+                    )
                 }
             }
         }
-        .safeAreaInset(edge: .bottom) {
+        .safeAreaInset(
+            edge: .bottom
+        ) {
+
             inputBar
         }
-        .background { AppBackground() }
+        .background {
+            AppBackground()
+        }
         .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .navigationBarTitleDisplayMode(
+            .inline
+        )
+        .toolbarColorScheme(
+            .dark,
+            for: .navigationBar
+        )
     }
 
     private func scrollToEnd(
@@ -1603,169 +2521,310 @@ struct ChatView: View {
 
             if animated {
 
-                withAnimation(.easeOut(duration: 0.25)) {
+                withAnimation(
+                    .easeOut(
+                        duration: 0.25
+                    )
+                ) {
 
-                    proxy.scrollTo(last.id, anchor: .bottom)
+                    proxy.scrollTo(
+                        last.id,
+                        anchor: .bottom
+                    )
                 }
 
             } else {
 
-                proxy.scrollTo(last.id, anchor: .bottom)
+                proxy.scrollTo(
+                    last.id,
+                    anchor: .bottom
+                )
             }
         }
     }
 
     @ViewBuilder
-    private func bubble(_ m: ChatMessage) -> some View {
+    private func bubble(
+        _ message: ChatMessage
+    ) -> some View {
 
         let who =
             engine.peers.first {
-                $0.id == m.senderId
+                $0.id == message.senderId
             }?.nick
-            ?? String(m.senderId.prefix(6))
+            ?? String(
+                message.senderId.prefix(6)
+            )
 
-        let continuation = isContinuation(m)
+        let continuation =
+            isContinuation(message)
 
         VStack(
-            alignment: m.outgoing ? .trailing : .leading,
+            alignment:
+                message.outgoing
+                ? .trailing
+                : .leading,
             spacing: 4
         ) {
 
-            if isGroup && !m.outgoing && !continuation {
+            if isGroup
+                && !message.outgoing
+                && !continuation {
 
                 HStack(spacing: 4) {
 
-                    Image(systemName: "person.fill")
-                        .font(.caption2)
+                    Image(
+                        systemName: "person.fill"
+                    )
+                    .font(.caption2)
 
                     Text(who)
-                        .font(.subheadline.weight(.bold))
+                        .font(
+                            .subheadline.weight(
+                                .bold
+                            )
+                        )
                         .lineLimit(1)
                 }
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(
+                    Theme.accent
+                )
             }
 
-            if m.outgoing {
+            if message.outgoing {
 
-                Text(m.text)
-                    .foregroundStyle(Color.white)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text(message.text)
+                    .foregroundStyle(
+                        Color.white
+                    )
+                    .multilineTextAlignment(
+                        .leading
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                     .glassSurface(
-                        shape: RoundedRectangle(
-                            cornerRadius: 20,
-                            style: .continuous
-                        ),
-                        tint: Theme.outgoingTint.opacity(0.75)
+                        shape:
+                            RoundedRectangle(
+                                cornerRadius: 20,
+                                style: .continuous
+                            ),
+                        tint:
+                            Theme.outgoingTint
+                                .opacity(0.75)
                     )
 
             } else {
 
-                Text(m.text)
-                    .foregroundStyle(Color.white)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text(message.text)
+                    .foregroundStyle(
+                        Color.white
+                    )
+                    .multilineTextAlignment(
+                        .leading
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .glassCard(cornerRadius: 20)
+                    .glassCard(
+                        cornerRadius: 20
+                    )
             }
 
-            if m.outgoing {
+            if message.outgoing {
 
-                statusBadge(m.status)
-                    .motion(Motion.quick, value: m.status)
+                statusBadge(
+                    message.status
+                )
+                .motion(
+                    Motion.quick,
+                    value: message.status
+                )
             }
         }
-        .padding(.leading, m.outgoing ? 56 : 0)
-        .padding(.trailing, m.outgoing ? 0 : 56)
+        .padding(
+            .leading,
+            message.outgoing ? 56 : 0
+        )
+        .padding(
+            .trailing,
+            message.outgoing ? 0 : 56
+        )
         .frame(
             maxWidth: .infinity,
-            alignment: m.outgoing ? .trailing : .leading
+            alignment:
+                message.outgoing
+                ? .trailing
+                : .leading
         )
-        .padding(.top, continuation ? 2 : 10)
-        .id(m.id)
+        .padding(
+            .top,
+            continuation ? 2 : 10
+        )
+        .id(message.id)
         .motionTransition(
             .asymmetric(
-                insertion: .move(edge: .bottom).combined(with: .opacity),
+                insertion:
+                    .opacity.combined(
+                        with:
+                            .move(
+                                edge: .bottom
+                            )
+                    ),
                 removal: .opacity
             )
         )
         .onTapGesture {
 
-            if m.status == .failed {
+            if message.status == .failed {
 
                 Haptics.warning()
 
-                engine.retry(m.id)
+                engine.retry(
+                    message.id
+                )
             }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(m.status == .failed ? .isButton : [])
+        .accessibilityElement(
+            children: .combine
+        )
+        .accessibilityAddTraits(
+            message.status == .failed
+                ? .isButton
+                : []
+        )
     }
 
     private var sendButton: some View {
 
-        Button(action: sendNow) {
+        Button(
+            action: sendNow
+        ) {
 
-            Image(systemName: "paperplane.fill")
-                .symbolRenderingMode(.hierarchical)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(Color.white)
-                .frame(width: controlSize, height: controlSize)
+            Image(
+                systemName:
+                    "paperplane.fill"
+            )
+            .symbolRenderingMode(
+                .hierarchical
+            )
+            .font(
+                .body.weight(.semibold)
+            )
+            .foregroundStyle(
+                Color.white
+            )
+            .frame(
+                width: controlSize,
+                height: controlSize
+            )
         }
         .glassCircle(
-            tint: Theme.accent.opacity(0.7),
+            tint:
+                Theme.accent.opacity(0.70),
             interactive: true
         )
-        .accessibilityLabel("Send message")
+        .accessibilityLabel(
+            "Send message"
+        )
+        .accessibilityHint(
+            isEmpty
+                ? "Enter a message first"
+                : "Sends the message"
+        )
     }
 
     private var sosButton: some View {
 
-        Button(action: sendNow) {
+        Button(
+            action: sendNow
+        ) {
 
             HStack(spacing: 6) {
 
-                Image(systemName: "exclamationmark.triangle.fill")
+                Image(
+                    systemName:
+                        "exclamationmark.triangle.fill"
+                )
 
                 Text("SOS")
             }
-            .font(.system(.subheadline, design: .rounded).weight(.heavy))
-            .foregroundStyle(Color.white)
+            .font(
+                .system(
+                    .subheadline,
+                    design: .rounded
+                )
+                .weight(.heavy)
+            )
+            .foregroundStyle(
+                Color.white
+            )
             .padding(.horizontal, 16)
-            .frame(minHeight: controlSize)
+            .frame(
+                minHeight: controlSize
+            )
         }
         .glassCapsule(
-            tint: Theme.danger.opacity(0.85),
+            tint:
+                Theme.danger.opacity(0.85),
             interactive: true
         )
         .padding(.leading, 4)
-        .accessibilityLabel("Send SOS")
-        .accessibilityHint("Broadcasts an emergency message to all nearby nodes")
+        .accessibilityLabel(
+            "Send SOS"
+        )
+        .accessibilityHint(
+            "Broadcasts an emergency message to all nearby nodes"
+        )
     }
 
     private var inputBar: some View {
 
-        GlassGroup(spacing: 8) {
+        GlassGroup(
+            spacing: 8
+        ) {
 
             HStack(spacing: 12) {
 
                 TextField(
                     "",
                     text: $text,
-                    prompt: Text("Secure message...")
-                        .foregroundColor(Color.white.opacity(0.55))
+                    prompt:
+                        Text("Secure message...")
+                        .foregroundColor(
+                            Color.white.opacity(
+                                0.55
+                            )
+                        )
                 )
-                .font(.system(.body, design: .rounded))
-                .foregroundStyle(Color.white)
+                .font(
+                    .system(
+                        .body,
+                        design: .rounded
+                    )
+                )
+                .foregroundStyle(
+                    Color.white
+                )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .frame(minHeight: controlSize)
-                .frame(minWidth: 0, maxWidth: .infinity)
+                .frame(
+                    minHeight: controlSize
+                )
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity
+                )
                 .glassCapsule()
-                .accessibilityLabel("Message")
+                .accessibilityLabel(
+                    "Message"
+                )
 
                 Group {
 
@@ -1778,12 +2837,18 @@ struct ChatView: View {
                         sendButton
                     }
                 }
-                .scaleEffect(bounce ? 0.94 : 1)
                 .disabled(isEmpty)
-                .opacity(isEmpty ? 0.5 : 1)
-                .motion(Motion.quick, value: isEmpty)
+                .opacity(
+                    isEmpty ? 0.5 : 1
+                )
+                .motion(
+                    Motion.quick,
+                    value: isEmpty
+                )
             }
-            .frame(maxWidth: .infinity)
+            .frame(
+                maxWidth: .infinity
+            )
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
@@ -1795,7 +2860,10 @@ struct ChatView: View {
             return
         }
 
-        engine.send(to: convId, text)
+        engine.send(
+            to: convId,
+            text
+        )
 
         text = ""
 
@@ -1807,21 +2875,6 @@ struct ChatView: View {
 
             Haptics.tap()
         }
-
-        withAnimation(Motion.quick) {
-
-            bounce = true
-        }
-
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + 0.15
-        ) {
-
-            withAnimation(Motion.quick) {
-
-                bounce = false
-            }
-        }
     }
 }
 
@@ -1832,30 +2885,56 @@ struct IdentityView: View {
 
     @EnvironmentObject var engine: MeshEngine
 
+    @Environment(\.accessibilityReduceMotion)
+    private var reduceMotion
+
     @State private var scanning = false
     @State private var result: String?
     @State private var copied = false
     @State private var qrPic = UIImage()
 
-    private func identityNick(_ p: PeerView) -> some View {
+    private func identityNick(
+        _ peer: PeerView
+    ) -> some View {
 
-        Text(p.nick)
-            .font(.system(.headline, design: .rounded).weight(.semibold))
-            .foregroundStyle(Color.white)
+        Text(peer.nick)
+            .font(
+                .system(
+                    .headline,
+                    design: .rounded
+                )
+                .weight(.semibold)
+            )
+            .foregroundStyle(
+                Color.white
+            )
             .lineLimit(1)
     }
 
-    private func identityBadge(_ p: PeerView) -> some View {
+    private func identityBadge(
+        _ peer: PeerView
+    ) -> some View {
 
         Label(
-            p.verified ? "Verified" : "Unverified",
-            systemImage: p.verified
+            peer.verified
+                ? "Verified"
+                : "Unverified",
+            systemImage:
+                peer.verified
                 ? "checkmark.seal.fill"
                 : "exclamationmark.shield"
         )
-        .symbolRenderingMode(.hierarchical)
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(p.verified ? Theme.mint : Theme.danger)
+        .symbolRenderingMode(
+            .hierarchical
+        )
+        .font(
+            .caption.weight(.semibold)
+        )
+        .foregroundStyle(
+            peer.verified
+                ? Theme.mint
+                : Theme.danger
+        )
         .fixedSize()
     }
 
@@ -1867,40 +2946,79 @@ struct IdentityView: View {
 
                 // MARK: Fingerprint
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 12
+                ) {
 
                     Label(
                         "Cryptographic Fingerprint",
-                        systemImage: "lock.shield.fill"
+                        systemImage:
+                            "lock.shield.fill"
                     )
-                    .symbolRenderingMode(.hierarchical)
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(Color.white)
-                    .accessibilityAddTraits(.isHeader)
+                    .symbolRenderingMode(
+                        .hierarchical
+                    )
+                    .font(
+                        .system(
+                            .headline,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(
+                        Color.white
+                    )
+                    .accessibilityAddTraits(
+                        .isHeader
+                    )
 
-                    Text(Crypto.fingerprint(engine.me))
-                        .font(.system(.footnote, design: .monospaced))
-                        .foregroundStyle(Color.white)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.leading)
+                    Text(
+                        Crypto.fingerprint(
+                            engine.me
+                        )
+                    )
+                    .font(
+                        .system(
+                            .footnote,
+                            design: .monospaced
+                        )
+                    )
+                    .foregroundStyle(
+                        Color.white
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
+                    .multilineTextAlignment(
+                        .leading
+                    )
 
                     Button {
 
                         UIPasteboard.general.string =
-                            Crypto.fingerprint(engine.me)
+                            Crypto.fingerprint(
+                                engine.me
+                            )
 
                         Haptics.success()
 
-                        withAnimation(Motion.quick) {
+                        withAnimation(
+                            Motion.quick
+                        ) {
 
                             copied = true
                         }
 
                         DispatchQueue.main.asyncAfter(
-                            deadline: .now() + 1.5
+                            deadline:
+                                .now()
+                                + 1.5
                         ) {
 
-                            withAnimation(Motion.quick) {
+                            withAnimation(
+                                Motion.quick
+                            ) {
 
                                 copied = false
                             }
@@ -1910,22 +3028,44 @@ struct IdentityView: View {
 
                         Label(
                             copied
-                            ? "Copied to Clipboard"
-                            : "Copy Fingerprint",
-                            systemImage: copied
+                                ? "Copied to Clipboard"
+                                : "Copy Fingerprint",
+                            systemImage:
+                                copied
                                 ? "checkmark.circle.fill"
                                 : "doc.on.doc"
                         )
-                        .font(.subheadline.weight(.semibold))
+                        .font(
+                            .subheadline.weight(
+                                .semibold
+                            )
+                        )
                         .symbolReplace()
-                        .frame(minHeight: 44, alignment: .leading)
+                        .frame(
+                            minHeight: 44,
+                            alignment: .leading
+                        )
                     }
-                    .foregroundStyle(Theme.accent)
-                    .buttonStyle(PressableStyle())
+                    .foregroundStyle(
+                        Theme.accent
+                    )
+                    .buttonStyle(
+                        PressableStyle()
+                    )
+                    .accessibilityLabel(
+                        copied
+                            ? "Fingerprint copied"
+                            : "Copy fingerprint"
+                    )
                 }
                 .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .glassCard(cornerRadius: 26)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .glassCard(
+                    cornerRadius: 26
+                )
 
                 // MARK: QR
 
@@ -1935,47 +3075,84 @@ struct IdentityView: View {
                         .interpolation(.none)
                         .resizable()
                         .scaledToFit()
-                        .frame(maxWidth: 240)
+                        .frame(
+                            maxWidth: 240
+                        )
                         .padding(16)
                         .background(
                             Color.white,
-                            in: RoundedRectangle(
-                                cornerRadius: 16,
-                                style: .continuous
-                            )
+                            in:
+                                RoundedRectangle(
+                                    cornerRadius: 16,
+                                    style: .continuous
+                                )
                         )
-                        .accessibilityLabel("Your identity QR code")
+                        .accessibilityLabel(
+                            "Your identity QR code"
+                        )
 
                     Text(
                         "Show this QR code to a friend in person to securely verify your mesh identity."
                     )
                     .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.white.opacity(0.85))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(
+                        .center
+                    )
+                    .foregroundStyle(
+                        Color.white.opacity(0.85)
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                     .padding(.horizontal, 8)
 
-                    if let r = result {
+                    if let result {
 
-                        let ok = r.hasPrefix("Successfully")
+                        let success =
+                            result.hasPrefix(
+                                "Successfully"
+                            )
 
                         Label(
-                            r,
-                            systemImage: ok
+                            result,
+                            systemImage:
+                                success
                                 ? "checkmark.shield.fill"
                                 : "xmark.shield.fill"
                         )
-                        .symbolRenderingMode(.hierarchical)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(ok ? Theme.mint : Theme.danger)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .motionTransition(.opacity)
+                        .symbolRenderingMode(
+                            .hierarchical
+                        )
+                        .font(
+                            .subheadline.weight(
+                                .semibold
+                            )
+                        )
+                        .foregroundStyle(
+                            success
+                                ? Theme.mint
+                                : Theme.danger
+                        )
+                        .multilineTextAlignment(
+                            .center
+                        )
+                        .fixedSize(
+                            horizontal: false,
+                            vertical: true
+                        )
+                        .motionTransition(
+                            .opacity
+                        )
                     }
                 }
                 .padding(20)
-                .frame(maxWidth: .infinity)
-                .glassCard(cornerRadius: 28)
+                .frame(
+                    maxWidth: .infinity
+                )
+                .glassCard(
+                    cornerRadius: 28
+                )
 
                 Button {
 
@@ -1987,101 +3164,197 @@ struct IdentityView: View {
 
                     Label(
                         "Scan Peer QR Code",
-                        systemImage: "qrcode.viewfinder"
+                        systemImage:
+                            "qrcode.viewfinder"
                     )
-                    .frame(maxWidth: .infinity)
+                    .frame(
+                        maxWidth: .infinity
+                    )
                 }
                 .buttonStyle(
-                    GlassButtonStyle(tint: Theme.accent.opacity(0.7))
+                    GlassButtonStyle(
+                        tint:
+                            Theme.accent.opacity(
+                                0.70
+                            )
+                    )
                 )
 
-                SectionTitle("Known Peer Identities")
+                SectionTitle(
+                    "Known Peer Identities"
+                )
 
                 // MARK: Known Peers
 
-                ForEach(engine.peers) { p in
+                ForEach(
+                    engine.peers
+                ) { peer in
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 8
+                    ) {
 
-                        ViewThatFits(in: .horizontal) {
+                        ViewThatFits(
+                            in: .horizontal
+                        ) {
 
                             HStack(spacing: 8) {
 
-                                identityNick(p)
+                                identityNick(
+                                    peer
+                                )
 
-                                Spacer(minLength: 8)
+                                Spacer(
+                                    minLength: 8
+                                )
 
-                                identityBadge(p)
+                                identityBadge(
+                                    peer
+                                )
                             }
 
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(
+                                alignment: .leading,
+                                spacing: 4
+                            ) {
 
-                                identityNick(p)
+                                identityNick(
+                                    peer
+                                )
 
-                                identityBadge(p)
+                                identityBadge(
+                                    peer
+                                )
                             }
                         }
 
-                        Text(p.fingerprint)
-                            .font(.system(.caption, design: .monospaced))
-                            .foregroundStyle(Color.white.opacity(0.8))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
+                        Text(
+                            peer.fingerprint
+                        )
+                        .font(
+                            .system(
+                                .caption,
+                                design: .monospaced
+                            )
+                        )
+                        .foregroundStyle(
+                            Color.white.opacity(0.80)
+                        )
+                        .fixedSize(
+                            horizontal: false,
+                            vertical: true
+                        )
+                        .multilineTextAlignment(
+                            .leading
+                        )
 
-                        if !p.verified {
+                        if !peer.verified {
 
-                            Button("Confirm Fingerprint Match") {
+                            Button(
+                                "Confirm Fingerprint Match"
+                            ) {
 
                                 Haptics.success()
 
-                                engine.setVerified(p.id)
+                                engine.setVerified(
+                                    peer.id
+                                )
                             }
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Theme.accent)
-                            .frame(minHeight: 44, alignment: .leading)
-                            .buttonStyle(PressableStyle())
+                            .font(
+                                .subheadline.weight(
+                                    .semibold
+                                )
+                            )
+                            .foregroundStyle(
+                                Theme.accent
+                            )
+                            .frame(
+                                minHeight: 44,
+                                alignment: .leading
+                            )
+                            .buttonStyle(
+                                PressableStyle()
+                            )
                         }
                     }
                     .padding(16)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .glassCard(cornerRadius: 20)
-                    .motionTransition(.opacity)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
+                    )
+                    .glassCard(
+                        cornerRadius: 20
+                    )
+                    .motionTransition(
+                        .opacity
+                    )
                 }
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 32)
-            .frame(maxWidth: 620)
-            .frame(maxWidth: .infinity)
-            .motion(Motion.standard, value: result)
-            .motion(Motion.standard, value: engine.peers.count)
+            .frame(
+                maxWidth: 620
+            )
+            .frame(
+                maxWidth: .infinity
+            )
+            .motion(
+                Motion.standard,
+                value: result
+            )
+            .motion(
+                Motion.standard,
+                value: engine.peers.count
+            )
         }
         .scrollIndicators(.hidden)
-        .background { AppBackground() }
-        .navigationTitle("Identity & Security")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .background {
+            AppBackground()
+        }
+        .navigationTitle(
+            "Identity & Security"
+        )
+        .navigationBarTitleDisplayMode(
+            .inline
+        )
+        .toolbarColorScheme(
+            .dark,
+            for: .navigationBar
+        )
         .onAppear {
 
-            qrPic = qrImage(engine.myQr())
+            qrPic = qrImage(
+                engine.myQr()
+            )
         }
-        .sheet(isPresented: $scanning) {
+        .sheet(
+            isPresented: $scanning
+        ) {
 
-            ZStack(alignment: .topTrailing) {
+            ZStack(
+                alignment: .topTrailing
+            ) {
 
                 QRScannerView { code in
 
                     scanning = false
 
-                    if let n = engine.verifyFromQr(code) {
+                    if let nick =
+                        engine.verifyFromQr(
+                            code
+                        ) {
 
-                        result = "Successfully verified \(n)"
+                        result =
+                            "Successfully verified \(nick)"
 
                         Haptics.success()
 
                     } else {
 
-                        result = "Invalid OffGrid QR code"
+                        result =
+                            "Invalid OffGrid QR code"
 
                         Haptics.warning()
                     }
@@ -2092,7 +3365,9 @@ struct IdentityView: View {
 
                     scanning = false
                 }
-                .buttonStyle(GlassButtonStyle())
+                .buttonStyle(
+                    GlassButtonStyle()
+                )
                 .padding()
             }
         }
@@ -2107,10 +3382,13 @@ struct RadiosView: View {
     @EnvironmentObject var engine: MeshEngine
 
     @AppStorage("selectedTheme")
-    private var selectedTheme: AppThemeStyle = .midnightBlue
+    private var selectedTheme:
+        AppThemeStyle = .midnightBlue
 
     @State private var host =
-        UserDefaults.standard.string(forKey: "lanHost") ?? ""
+        UserDefaults.standard.string(
+            forKey: "lanHost"
+        ) ?? ""
 
     @State private var confirmStop = false
 
@@ -2124,27 +3402,46 @@ struct RadiosView: View {
 
         } label: {
 
-            Label("Restart Node", systemImage: "arrow.clockwise")
-                .frame(maxWidth: .infinity)
+            Label(
+                "Restart Node",
+                systemImage:
+                    "arrow.clockwise"
+            )
+            .frame(
+                maxWidth: .infinity
+            )
         }
         .buttonStyle(
-            GlassButtonStyle(tint: Theme.accent.opacity(0.7))
+            GlassButtonStyle(
+                tint:
+                    Theme.accent.opacity(0.70)
+            )
         )
     }
 
     private var stopButton: some View {
 
-        Button(role: .destructive) {
+        Button(
+            role: .destructive
+        ) {
 
             confirmStop = true
 
         } label: {
 
-            Label("Stop Mesh", systemImage: "power")
-                .frame(maxWidth: .infinity)
+            Label(
+                "Stop Mesh",
+                systemImage: "power"
+            )
+            .frame(
+                maxWidth: .infinity
+            )
         }
         .buttonStyle(
-            GlassButtonStyle(tint: Theme.danger.opacity(0.7))
+            GlassButtonStyle(
+                tint:
+                    Theme.danger.opacity(0.70)
+            )
         )
     }
 
@@ -2156,151 +3453,297 @@ struct RadiosView: View {
 
                 // MARK: Theme
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 12
+                ) {
 
                     Label(
                         "Visual Theme",
-                        systemImage: "paintpalette.fill"
+                        systemImage:
+                            "paintpalette.fill"
                     )
-                    .symbolRenderingMode(.hierarchical)
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(Color.white)
+                    .symbolRenderingMode(
+                        .hierarchical
+                    )
+                    .font(
+                        .system(
+                            .headline,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(
+                        Color.white
+                    )
 
                     Picker(
                         "Theme",
-                        selection: $selectedTheme
+                        selection:
+                            $selectedTheme
                     ) {
 
-                        ForEach(AppThemeStyle.allCases) { theme in
+                        ForEach(
+                            AppThemeStyle.allCases
+                        ) { theme in
 
-                            Text(theme.rawValue)
-                                .tag(theme)
+                            Text(
+                                theme.rawValue
+                            )
+                            .tag(theme)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(
+                        .segmented
+                    )
 
                     Text(
                         "Switch between Midnight Blue and Obsidian Teal design aesthetics."
                     )
                     .font(.subheadline)
-                    .foregroundStyle(Color.white.opacity(0.75))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(
+                        Color.white.opacity(0.75)
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                 }
                 .padding(16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .glassCard(cornerRadius: 22)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .glassCard(
+                    cornerRadius: 22
+                )
 
                 // MARK: Transports
 
-                ForEach(engine.transportInfos) { t in
+                ForEach(
+                    engine.transportInfos
+                ) { transport in
 
-                    HStack(alignment: .top, spacing: 12) {
+                    HStack(
+                        alignment: .top,
+                        spacing: 12
+                    ) {
 
                         StatusDot(
-                            on: t.state.active && t.state.links > 0,
+                            on:
+                                transport.state.active
+                                && transport.state.links > 0,
                             size: 9
                         )
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(
+                            alignment: .leading,
+                            spacing: 4
+                        ) {
 
                             Text(
-                                "\(t.label): \(t.state.active ? "Active" : "Inactive") · \(t.state.links) link(s)"
+                                "\(transport.label): \(transport.state.active ? "Active" : "Inactive") · \(transport.state.links) link(s)"
                             )
-                            .font(.system(.headline, design: .rounded).weight(.semibold))
-                            .foregroundStyle(Color.white)
+                            .font(
+                                .system(
+                                    .headline,
+                                    design: .rounded
+                                )
+                                .weight(.semibold)
+                            )
+                            .foregroundStyle(
+                                Color.white
+                            )
                             .lineLimit(3)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .fixedSize(
+                                horizontal: false,
+                                vertical: true
+                            )
 
-                            Text(t.state.detail)
+                            Text(
+                                transport.state.detail
+                            )
+                            .font(.subheadline)
+                            .foregroundStyle(
+                                Color.white.opacity(
+                                    0.80
+                                )
+                            )
+                            .fixedSize(
+                                horizontal: false,
+                                vertical: true
+                            )
+
+                            if let error =
+                                transport.state.error {
+
+                                Label(
+                                    error,
+                                    systemImage:
+                                        "exclamationmark.triangle.fill"
+                                )
                                 .font(.subheadline)
-                                .foregroundStyle(Color.white.opacity(0.8))
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            if let e = t.state.error {
-
-                                Label(e, systemImage: "exclamationmark.triangle.fill")
-                                    .font(.subheadline)
-                                    .foregroundStyle(Theme.danger)
-                                    .fixedSize(horizontal: false, vertical: true)
+                                .foregroundStyle(
+                                    Theme.danger
+                                )
+                                .fixedSize(
+                                    horizontal: false,
+                                    vertical: true
+                                )
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .leading
+                        )
                         .layoutPriority(1)
                     }
                     .padding(16)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .glassCard(cornerRadius: 20)
-                    .motionTransition(
-                        .move(edge: .leading).combined(with: .opacity)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
                     )
-                    .accessibilityElement(children: .combine)
+                    .glassCard(
+                        cornerRadius: 20
+                    )
+                    .motionTransition(
+                        .opacity.combined(
+                            with:
+                                .move(
+                                    edge: .leading
+                                )
+                        )
+                    )
+                    .accessibilityElement(
+                        children: .combine
+                    )
                 }
 
                 // MARK: LAN Host
 
-                SectionTitle("Android Hotspot Host (Optional)")
+                SectionTitle(
+                    "Android Hotspot Host (Optional)"
+                )
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(
+                    alignment: .leading,
+                    spacing: 12
+                ) {
 
                     TextField(
                         "",
                         text: $host,
-                        prompt: Text("Host IP (e.g. 192.168.43.1)")
-                            .foregroundColor(Color.white.opacity(0.55))
+                        prompt:
+                            Text(
+                                "Host IP (e.g. 192.168.43.1)"
+                            )
+                            .foregroundColor(
+                                Color.white.opacity(
+                                    0.55
+                                )
+                            )
                     )
-                    .font(.system(.body, design: .rounded))
-                    .keyboardType(.numbersAndPunctuation)
+                    .font(
+                        .system(
+                            .body,
+                            design: .rounded
+                        )
+                    )
+                    .keyboardType(
+                        .numbersAndPunctuation
+                    )
                     .autocorrectionDisabled()
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(
+                        Color.white
+                    )
                     .fieldSurface()
-                    .accessibilityLabel("Hotspot host IP address")
-                    .onChange(of: host) {
-                        engine.lan.manualHost = $0
+                    .accessibilityLabel(
+                        "Hotspot host IP address"
+                    )
+                    .onChange(
+                        of: host
+                    ) {
+
+                        engine.lan.manualHost =
+                            $0
                     }
 
                     Text(
                         "Connect to the Android hotspot Wi-Fi in iOS Settings, then open this app and enable Local Network access."
                     )
                     .font(.subheadline)
-                    .foregroundStyle(Color.white.opacity(0.8))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundStyle(
+                        Color.white.opacity(0.80)
+                    )
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
                 }
                 .padding(16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .glassCard(cornerRadius: 24)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .glassCard(
+                    cornerRadius: 24
+                )
 
-                // MARK: Node Controls
+                // MARK: Node Information
 
                 Text(
                     "iOS suspends background execution. Bluetooth maintains limited connectivity, but backgrounded iPhones may not be discoverable by Android nodes. Keep the app open for optimal mesh routing."
                 )
                 .font(.subheadline)
-                .foregroundStyle(Color.white.opacity(0.8))
-                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(
+                    Color.white.opacity(0.80)
+                )
+                .fixedSize(
+                    horizontal: false,
+                    vertical: true
+                )
                 .padding(16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .glassCard(cornerRadius: 24)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .glassCard(
+                    cornerRadius: 24
+                )
 
-                GlassGroup(spacing: 12) {
+                // MARK: Node Controls
 
-                    ViewThatFits(in: .horizontal) {
+                GlassGroup(
+                    spacing: 12
+                ) {
+
+                    ViewThatFits(
+                        in: .horizontal
+                    ) {
 
                         HStack(spacing: 12) {
 
                             restartButton
-                                .frame(maxWidth: .infinity)
+                                .frame(
+                                    maxWidth: .infinity
+                                )
 
                             stopButton
-                                .frame(maxWidth: .infinity)
+                                .frame(
+                                    maxWidth: .infinity
+                                )
                         }
 
                         VStack(spacing: 12) {
 
                             restartButton
-                                .frame(maxWidth: .infinity)
+                                .frame(
+                                    maxWidth: .infinity
+                                )
 
                             stopButton
-                                .frame(maxWidth: .infinity)
+                                .frame(
+                                    maxWidth: .infinity
+                                )
                         }
                     }
                 }
@@ -2308,17 +3751,31 @@ struct RadiosView: View {
             .padding(.horizontal, 20)
             .padding(.top, 8)
             .padding(.bottom, 32)
-            .frame(maxWidth: 620)
-            .frame(maxWidth: .infinity)
+            .frame(
+                maxWidth: 620
+            )
+            .frame(
+                maxWidth: .infinity
+            )
         }
         .scrollIndicators(.hidden)
-        .background { AppBackground() }
-        .navigationTitle("Radios & Settings")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarColorScheme(.dark, for: .navigationBar)
+        .background {
+            AppBackground()
+        }
+        .navigationTitle(
+            "Radios & Settings"
+        )
+        .navigationBarTitleDisplayMode(
+            .inline
+        )
+        .toolbarColorScheme(
+            .dark,
+            for: .navigationBar
+        )
         .confirmationDialog(
             "Stop OffGrid Chat?",
-            isPresented: $confirmStop,
+            isPresented:
+                $confirmStop,
             titleVisibility: .visible
         ) {
 
