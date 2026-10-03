@@ -1928,7 +1928,7 @@ struct AnimationView: View {
             config:
                 AnimationConfig(
                     autoplay: true,
-                    loop: false
+                    loop: true
                 )
         )
         .view()
